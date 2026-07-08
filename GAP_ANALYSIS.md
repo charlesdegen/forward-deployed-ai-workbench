@@ -8,11 +8,11 @@
 | Area | Maturity | Notes |
 |---|---|---|
 | Vision & doctrine | Strong | Portfolio-grade narrative in README + two doctrine docs |
-| Starter artifact | Partial | Telemetry scoring + Streamlit console + operator log |
-| Repo scaffold | ~20% | Many documented paths not yet created |
-| Agent wiring | Weak | No `CLAUDE.md`; `AGENTS.md` added in P0 |
-| Portfolio (5 artifacts) | Not started | Documented only |
-| CI / verify gate | Missing | No `scripts/verify.sh` |
+| Starter artifact | Strong | Streamlit + NiceGUI consoles, operator log, RCA export |
+| Repo scaffold | ~60% | Specs, schemas, evals, verify gate in place |
+| Agent wiring | Good | `AGENTS.md` + `CLAUDE.md` + adapter prompts |
+| Portfolio (5 artifacts) | Started | Mission Console (#1) shipped |
+| CI / verify gate | Done | `scripts/verify.sh` — 17 tests |
 
 ---
 
@@ -20,27 +20,23 @@
 
 ### Missing entirely
 
-- `CLAUDE.md` and `.claude/` (skills, agents, hooks)
-- `.grok/sandbox.toml`, `.grok/rules/`
+- `.claude/` (skills, agents, hooks) and `.grok/` config
 - `pyproject.toml`
-- `src/schemas/input_schema.json`, `output_schema.json`
-- `src/core/transforms.py`, `scoring.py`, `exports.py` (logic consolidated in `ingestion.py`)
-- `src/apps/nicegui_app.py`
+- `src/core/transforms.py`, `scoring.py` (logic in `ingestion.py` + `exports.py` + `duckdb_store.py`)
 - `single_file_html/` no-build template
-- `scripts/verify.sh`
-- `/evals/` scorecards (artifact, security, field readiness)
 - `/docs/` (architecture, deployment, demo_script)
-- Five portfolio sub-repos under umbrella
+- `specs/threat_model.md`
+- Four remaining portfolio artifacts (#2–#5) and umbrella sub-repos
 
 ### Partial
 
 | Path | Have | Missing |
 |---|---|---|
-| `/specs` | `product_brief.md` | `operator_workflow.md`, `data_contract.md`, `acceptance_criteria.md`, `threat_model.md` |
-| `/prompts` | ChatGPT architect, Codex repair | Grok/Claude build briefs, eval, design system prompts |
-| `/fixtures` | `sample_telemetry.csv` (P0) | xlsx, json, logs samples |
-| `/tests` | `test_ingestion.py` | App smoke tests, golden outputs, schema contract tests |
-| `/artifacts` | Runtime operator log | html, mermaid, exports dirs; committed structure |
+| `/specs` | product, data contract, acceptance, operator workflow | `threat_model.md` |
+| `/prompts` | ChatGPT, Codex, Grok, Claude briefs | eval, design system prompts |
+| `/fixtures` | `sample_telemetry.csv` | xlsx, json, logs samples |
+| `/tests` | ingestion, exports, golden, duckdb | NiceGUI smoke tests |
+| `/artifacts` | exports/, duckdb runtime, operator log | html, mermaid screenshot dirs |
 
 ---
 
@@ -122,9 +118,10 @@
 
 ### P3 — Portfolio path
 
-- [ ] Build artifact #1 (Mission Console) or #3 (Data Fusion)
+- [x] Build artifact #1 (Mission Console — NiceGUI + DuckDB)
 - [ ] GitHub remote + README screenshots
 - [ ] Split into umbrella sub-repos when artifact count ≥ 2
+- [ ] Build artifact #3 (Local Data Fusion Workbench)
 
 ---
 

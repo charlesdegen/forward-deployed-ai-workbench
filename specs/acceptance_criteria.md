@@ -57,10 +57,19 @@
 - [ ] RCA packet export from Operator Log tab writes to `artifacts/exports/`
 - [ ] RCA JSON validates against `rca_packet_schema.json`
 
+## Mission Console (NiceGUI + DuckDB)
+
+- [ ] `python src/apps/nicegui_app.py` launches on `http://127.0.0.1:8080`
+- [ ] Fixture ingest on startup populates `artifacts/mission_console.duckdb`
+- [ ] Governance panel shows live data source, alerts, system state
+- [ ] SQL-backed alerts queue matches Python scoring (8 alerts on fixture)
+- [ ] Degraded-mode switch and guidance visible when DEGRADED
+- [ ] RCA export from Operator Log tab
+
 ## Out of scope (starter)
 
-- Live LLM inference inside Streamlit
-- DuckDB/Polars query layer
+- Live LLM inference inside Streamlit/NiceGUI
+- Polars query layer for very large files
 - RCA packet PDF export
 - NiceGUI variant (portfolio artifact #1)
 

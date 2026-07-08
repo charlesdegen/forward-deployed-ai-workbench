@@ -41,7 +41,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Run the Starter Triage Application
+### 4. Run the Mission Console (NiceGUI + DuckDB)
+```bash
+python src/apps/nicegui_app.py
+```
+Open `http://127.0.0.1:8080` — fixture telemetry loads into local DuckDB on startup.
+
+### 4b. Run the Streamlit Starter (legacy surface)
 ```bash
 streamlit run src/apps/streamlit_app.py
 ```
@@ -100,7 +106,8 @@ Full optional operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE
 -   `/prompts`: ChatGPT, Codex, Grok Build, and Claude Code build/repair briefs.
 -   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`).
 -   `/src/core`: Core analytical modules (data ingestion, scoring, transformations).
--   `/src/apps`: Front-end interfaces (Streamlit, NiceGUI, or single-file HTML).
+-   `/src/apps`: `nicegui_app.py` (Mission Console, DuckDB-backed) and `streamlit_app.py` (starter).
+-   `src/core/duckdb_store.py`: Local DuckDB persistence and SQL alert queries.
 -   `/artifacts`: Local operator logs and `exports/` RCA packets (runtime-generated).
 -   `/evals`: Artifact, security, and field-readiness scorecard templates.
 -   `/fixtures`: Sample datasets (telemetry logs, CSV extracts) for testing.

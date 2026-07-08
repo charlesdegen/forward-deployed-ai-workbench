@@ -93,9 +93,16 @@ Golden regression summary: `tests/golden_outputs/fixture_scoring_summary.json`
 - **Output dir:** `artifacts/exports/` (gitignored contents; `.gitkeep` only)
 - **Formats:** JSON + Markdown per export
 
+## DuckDB store (Mission Console)
+
+- **Module:** `src/core/duckdb_store.py`
+- **Database:** `artifacts/mission_console.duckdb` (local file, gitignored)
+- **Tables:** `ingest_sessions`, `telemetry_scored`
+- **Flow:** Python scores via `score_anomalies()` → persisted to DuckDB → UI/SQL reads alerts
+
 ## Future extensions
 
-- DuckDB/Polars adapters for files > 100 MB
+- Polars adapters for files > 100 MB
 - Parquet ingestion
 - Full golden CSV hash comparison for entire scored frame
 

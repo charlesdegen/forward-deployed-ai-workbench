@@ -8,6 +8,7 @@ __pycache__/
 .DS_Store
 .env
 artifacts/operator_action_log.csv
+artifacts/mission_console.duckdb
 artifacts/exports/*
 !artifacts/exports/.gitkeep
 *.egg-info/

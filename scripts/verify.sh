@@ -16,7 +16,7 @@ echo "==> ruff"
 python -m ruff check src tests
 
 echo "==> py_compile"
-python -m py_compile src/apps/streamlit_app.py src/core/ingestion.py src/core/exports.py
+python -m py_compile src/apps/streamlit_app.py src/apps/nicegui_app.py src/core/ingestion.py src/core/exports.py src/core/duckdb_store.py
 
 echo "==> fixture present"
 test -f fixtures/sample_telemetry.csv

@@ -22,7 +22,8 @@ Convert ambiguous operational requirements into **local-first, high-trust, testa
 | `specs/` | Product briefs, data contracts, acceptance criteria |
 | `prompts/` | Reusable architect and repair briefs per agent adapter |
 | `skills/` | Domain skills (`SKILL.md`) for triage, RCA, evals |
-| `src/core/` | Ingestion, scoring, exports (`exports.py` RCA packets) |
+| `src/core/` | Ingestion, scoring, exports (`exports.py`), DuckDB store (`duckdb_store.py`) |
+| `src/apps/nicegui_app.py` | Mission Console — portfolio NiceGUI + DuckDB surface |
 | `src/schemas/` | JSON Schema contracts for input, output, RCA |
 | `evals/` | Artifact, security, field-readiness scorecards |
 | `src/apps/` | Streamlit, NiceGUI, and other operator UIs |
