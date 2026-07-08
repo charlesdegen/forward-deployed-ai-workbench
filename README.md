@@ -27,12 +27,12 @@ Implement the build brief, add focused tests, run the test suite, and summarize 
 ```
 
 ### 2. Configure Environment
-Create a `.env` file in the root of this repository if you want live model-backed assistant features:
+Create a `.env` file in the root of this repository if you want to prepare for OpenAI-backed assistant features:
 ```bash
 OPENAI_API_KEY="your_api_key_here"
 ```
 
-The starter app remains useful without a key: local telemetry generation, anomaly scoring, charts, alert queues, and fallback triage checklists all run offline.
+The starter app runs in prompt export mode: it generates high-context ChatGPT and Codex briefs, but does not make live API calls yet. Local telemetry generation, anomaly scoring, charts, alert queues, operator action logging, and fallback triage checklists all run offline.
 
 ### 3. Initialize Python Environment
 ```bash
@@ -46,7 +46,17 @@ pip install -r requirements.txt
 streamlit run src/apps/streamlit_app.py
 ```
 
-### 5. Open the Workspace in Grok Build
+### 5. Verify the Starter
+```bash
+python -m pytest
+python -m py_compile src/apps/streamlit_app.py src/core/ingestion.py
+```
+
+## Optional Agent Adapters
+
+ChatGPT and Codex are the default workflow for this repository. Other agent CLIs can be used as optional adapters when you want to compare build loops or run the same doctrine in another tool.
+
+### Grok Build Adapter
 
 Install the Grok Build CLI (macOS/Linux):
 
@@ -77,15 +87,20 @@ Optional sandbox profile for everyday development (read everywhere, write CWD + 
 grok --sandbox workspace -m grok-build --cwd /Users/charlesdegen/Documents/forward-deployed-ai-workbench
 ```
 
-Full operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE.md).
+Full optional operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE.md).
 
 ## Repository Structure
 
+-   `AGENTS.md`: Shared agent rules loaded by Codex, Grok Build, and Claude Code — local-first constraints, verification gates, adapter routing.
+-   `GAP_ANALYSIS.md`: Living gap analysis — repo fidelity vs. doctrine and priority roadmap.
 -   `GROKBUILD_DOCTRINE.md`: GrokBuild manifesto — FDE doctrine, toolchain layers, governance, and Grok Build quick-reference.
+-   `CLAUDEBUILD_DOCTRINE.md`: Optional Claude-oriented doctrine for comparison workflows.
 -   `/specs`: Product specifications, data contracts, and operational workflows.
--   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`). Grok Build auto-discovers these as `SKILL.md` packages and slash commands.
+-   `/prompts`: Reusable ChatGPT architect prompts and Codex repair/build briefs.
+-   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`).
 -   `/src/core`: Core analytical modules (data ingestion, scoring, transformations).
 -   `/src/apps`: Front-end interfaces (Streamlit, NiceGUI, or single-file HTML).
+-   `/artifacts`: Local operator logs, exports, screenshots, and generated handoff packets.
 -   `/fixtures`: Sample datasets (telemetry logs, CSV extracts) for testing.
 -   `/tests`: pytest testing suites.
 
@@ -97,7 +112,7 @@ Full operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE.md).
 4.  **Repair with Codex**: Feed the review back into Codex as a targeted repair brief: specific defects, files, expected behavior, and verification commands.
 5.  **Package the artifact**: Produce a local app, single-file HTML export, screenshot set, README, demo script, and evaluation scorecard.
 
-## Grok Build Workflow
+## Optional Grok Build Workflow
 
 Grok Build is xAI's terminal-native agent: it reads this repo, runs shell commands, applies line-precise diffs, spawns parallel subagents, and validates changes in a real local environment. Use it as the acceleration layer inside the same FDE loop — Grok compresses ambiguity; the human owns mission judgment and sign-off.
 

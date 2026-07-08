@@ -13,10 +13,10 @@ A field-deployable dashboard that enables operators to monitor telemetry, evalua
 -   **Human-Owned Decisions**: AI assistance may draft checklists, briefs, and code changes, but operators and engineers retain final authority over field actions and deployment decisions.
 
 ## Core Features
-1.  **Telemetry Aggregation**: Local file ingestion and structured schema checks using DuckDB and Polars.
+1.  **Telemetry Aggregation**: Synthetic telemetry generation, local CSV ingestion, and required-column schema validation. DuckDB/Polars adapters are reserved for larger local datasets.
 2.  **Stateful Diagnostics**: Anomaly ranking based on compute loads, battery state, and sensor drift.
-3.  **Operator Action log**: Simple, persistent local logging of triage actions.
-4.  **AI-Assisted Troubleshooting**: ChatGPT-ready troubleshooting prompts and Codex-readable `triage-skill` guidance for checklist recovery, RCA drafting, and engineering feedback packets.
+3.  **Operator Action log**: Simple, persistent local CSV logging of triage actions for RCA packets and engineering handoff.
+4.  **AI-Assisted Troubleshooting**: Prompt export mode for ChatGPT-ready troubleshooting prompts and Codex-readable `triage-skill` guidance. Live API-backed troubleshooting is a later integration point, not a starter requirement.
 
 ## ChatGPT Role
 -   Convert field notes and operator interviews into acceptance criteria, telemetry contracts, and scenario-based test plans.
@@ -32,6 +32,6 @@ A field-deployable dashboard that enables operators to monitor telemetry, evalua
 
 ## OpenAI-Specific Acceptance Criteria
 -   The README explains how ChatGPT and Codex cooperate across framing, implementation, review, repair, and packaging.
--   The app presents OpenAI assistant setup using `OPENAI_API_KEY` while keeping offline fallback triage available without credentials.
+-   The app presents OpenAI prompt export setup using `OPENAI_API_KEY` as optional future configuration while keeping offline fallback triage available without credentials.
 -   The `triage-skill` is useful as Codex context: it should specify triage priorities, RCA expectations, and repo-editing constraints.
 -   Any model-backed troubleshooting output must expose assumptions, cite the telemetry values that triggered the recommendation, and separate advisory text from operator-approved actions.

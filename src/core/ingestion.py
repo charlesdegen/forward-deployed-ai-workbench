@@ -1,6 +1,22 @@
 import pandas as pd
 import numpy as np
 
+REQUIRED_TELEMETRY_COLUMNS = {
+    'timestamp',
+    'battery_level',
+    'cpu_utilization',
+    'sensor_drift',
+    'comms_link',
+    'temperature',
+}
+
+CPU_ANOMALY_THRESHOLD = 85.0
+TEMP_WARNING_THRESHOLD = 80.0
+TEMP_CRITICAL_THRESHOLD = 85.0
+SENSOR_DRIFT_THRESHOLD = 0.3
+COMMS_LINK_THRESHOLD = 80.0
+
+
 def generate_mock_telemetry(num_records: int = 50) -> pd.DataFrame:
     """Generates synthetic telemetry data for testing.
     
@@ -37,22 +53,48 @@ def generate_mock_telemetry(num_records: int = 50) -> pd.DataFrame:
     
     return df
 
+
+def validate_telemetry_schema(df: pd.DataFrame) -> None:
+    """Raises ValueError when required telemetry columns are missing."""
+    missing = REQUIRED_TELEMETRY_COLUMNS.difference(df.columns)
+    if missing:
+        missing_list = ', '.join(sorted(missing))
+        raise ValueError(f"Missing required telemetry columns: {missing_list}")
+
+
+def parse_telemetry_csv(source) -> pd.DataFrame:
+    """Loads telemetry CSV from a file path or file-like object and validates schema."""
+    df = pd.read_csv(source, parse_dates=['timestamp'])
+    validate_telemetry_schema(df)
+    return df
+
+
+def load_telemetry_csv(path: str) -> pd.DataFrame:
+    """Loads local telemetry CSV data and validates the expected schema."""
+    return parse_telemetry_csv(path)
+
+
 def score_anomalies(df: pd.DataFrame) -> pd.DataFrame:
     """Applies thresholds to highlight anomalies in the telemetry log.
     
     Args:
         df: Input DataFrame containing telemetry columns.
     """
+    validate_telemetry_schema(df)
+
     scored = df.copy()
-    scored['cpu_anomaly'] = scored['cpu_utilization'] > 85.0
-    scored['temp_anomaly'] = scored['temperature'] > 80.0
-    scored['sensor_anomaly'] = scored['sensor_drift'] > 0.3
-    scored['comms_anomaly'] = scored['comms_link'] < 80.0
+    scored['cpu_anomaly'] = scored['cpu_utilization'] > CPU_ANOMALY_THRESHOLD
+    scored['temp_warning'] = scored['temperature'] > TEMP_WARNING_THRESHOLD
+    scored['temp_critical'] = scored['temperature'] > TEMP_CRITICAL_THRESHOLD
+    scored['temp_anomaly'] = scored['temp_warning']
+    scored['sensor_anomaly'] = scored['sensor_drift'] > SENSOR_DRIFT_THRESHOLD
+    scored['comms_anomaly'] = scored['comms_link'] < COMMS_LINK_THRESHOLD
     
     # Overall risk score (0-100)
     scored['risk_score'] = (
         (scored['cpu_anomaly'].astype(int) * 30) +
-        (scored['temp_anomaly'].astype(int) * 30) +
+        (scored['temp_warning'].astype(int) * 20) +
+        (scored['temp_critical'].astype(int) * 10) +
         (scored['sensor_anomaly'].astype(int) * 20) +
         (scored['comms_anomaly'].astype(int) * 20)
     )

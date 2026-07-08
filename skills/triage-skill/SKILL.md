@@ -13,7 +13,7 @@ This skill provides instructions for identifying and troubleshooting anomalies i
 - Treat model output as advisory until an operator or engineer approves the action. Always expose the telemetry values and assumptions behind a recommendation.
 
 ## Triage Priority Rules
-1.  **Safety & Power**: Check power grids, battery depletion rates, and temperature status first. If temperature is > 85°C, advise immediate shutdown.
+1.  **Safety & Power**: Check power grids, battery depletion rates, and temperature status first. Treat temperature > 80°C as a warning band and > 85°C as a critical band that may require immediate shutdown.
 2.  **Communications**: Check link quality and signal-to-noise ratio. If degraded, check line-of-sight and antenna configurations.
 3.  **Sensor Alignment**: Check IMU drift, GPS lock, and camera feed frames. If drifts are high, recommend sensor recalibration.
 4.  **Compute & Software**: Check CPU/GPU utilization, memory leakage, and thread counts.
