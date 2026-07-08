@@ -46,10 +46,44 @@ pip install -r requirements.txt
 streamlit run src/apps/streamlit_app.py
 ```
 
+### 5. Open the Workspace in Grok Build
+
+Install the Grok Build CLI (macOS/Linux):
+
+```bash
+curl -fsSL https://x.ai/cli/install.sh | bash
+grok --version
+```
+
+Authenticate on first launch via browser login, or set `XAI_API_KEY` for headless/CI use.
+
+Launch in this repository with the Grok Build model:
+
+```bash
+grok -m grok-build --cwd /Users/charlesdegen/Documents/forward-deployed-ai-workbench
+```
+
+Attach file context with `@` references in prompts (e.g. `@specs/product_brief.md`, `@src/core/ingestion.py`, `@tests/`).
+
+Use Grok for repo-bound execution prompts such as:
+
+```text
+Implement the build brief in @specs/product_brief.md, add focused tests, run pytest, and summarize git diff.
+```
+
+Optional sandbox profile for everyday development (read everywhere, write CWD + `~/.grok` + temp dirs):
+
+```bash
+grok --sandbox workspace -m grok-build --cwd /Users/charlesdegen/Documents/forward-deployed-ai-workbench
+```
+
+Full operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE.md).
+
 ## Repository Structure
 
+-   `GROKBUILD_DOCTRINE.md`: GrokBuild manifesto — FDE doctrine, toolchain layers, governance, and Grok Build quick-reference.
 -   `/specs`: Product specifications, data contracts, and operational workflows.
--   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`).
+-   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`). Grok Build auto-discovers these as `SKILL.md` packages and slash commands.
 -   `/src/core`: Core analytical modules (data ingestion, scoring, transformations).
 -   `/src/apps`: Front-end interfaces (Streamlit, NiceGUI, or single-file HTML).
 -   `/fixtures`: Sample datasets (telemetry logs, CSV extracts) for testing.
@@ -62,6 +96,31 @@ streamlit run src/apps/streamlit_app.py
 3.  **Review with ChatGPT**: Paste or upload the resulting diff, screenshots, and test output for architecture review, operator-readiness critique, and missing-risk analysis.
 4.  **Repair with Codex**: Feed the review back into Codex as a targeted repair brief: specific defects, files, expected behavior, and verification commands.
 5.  **Package the artifact**: Produce a local app, single-file HTML export, screenshot set, README, demo script, and evaluation scorecard.
+
+## Grok Build Workflow
+
+Grok Build is xAI's terminal-native agent: it reads this repo, runs shell commands, applies line-precise diffs, spawns parallel subagents, and validates changes in a real local environment. Use it as the acceleration layer inside the same FDE loop — Grok compresses ambiguity; the human owns mission judgment and sign-off.
+
+1.  **Frame with Grok**: Convert messy field context into a product brief, threat model, acceptance criteria, eval rubric, and demo script. For multi-component systems, use `/design <description>` to run a writer→reviewer loop that produces an architecture spec and PR-plan DAG.
+2.  **Plan when ambiguous**: Use `/plan` or plan mode (`Shift+Tab`) when the right approach is unclear (auth model, data pipeline shape, deployment path). Grok writes `plan.md` for approval before editing code.
+3.  **Build with Grok Build**: Attach context via `@` file references and ask Grok to implement from the brief. Grok scaffolds code, runs `pytest`/`ruff`, and repairs failures via execution feedback. Use `grok --worktree=<name>` for isolated artifact branches.
+4.  **Verify before demo**: Run `/check-work [focus]` to spawn a verifier subagent that reviews diffs, runs builds/tests, and gates ship readiness.
+5.  **Review before handoff**: Run `/review --local` for a read-only review artifact before operator delivery or engineering feedback.
+6.  **Package the artifact**: Produce a local app, single-file HTML export, screenshot set, README, demo script, and evaluation scorecard. Use `git diff` to summarize changes for RCA packets.
+
+**Bundled orchestration skills** (slash commands):
+
+| Skill | Command | Use when |
+|---|---|---|
+| Design | `/design <description>` | Architecture spec + PR-plan DAG needed |
+| Execute plan | `/execute-plan <design-doc>` | Multi-PR stack from a design doc |
+| Check work | `/check-work [focus]` | Mandatory verify gate before demo |
+| Review | `/review --local` | Pre-handoff diff review |
+
+**Grok / human role split**
+
+- **Grok**: requirement decomposition, architecture & Mermaid diagrams, code scaffolding, test generation, diff analysis, eval design, README/demo narrative, sandbox validation.
+- **Human**: choose mission, define acceptance criteria, control data exposure, approve plans, set permission/sandbox mode, judge UX usefulness, decide when to ship, own the operational narrative.
 
 ## Codex-Ready Build Brief Template
 
@@ -86,4 +145,57 @@ Acceptance:
 - App runs with `streamlit run src/apps/streamlit_app.py`.
 - Tests pass with `pytest`.
 - README explains how ChatGPT and Codex are used in the build loop.
+```
+
+## Grok Build Task Brief Template
+
+```text
+You are Grok assisting modification of this Forward-Deployed AI Systems Workbench repository.
+
+Mission: [One-sentence objective]
+
+Operational context: [Who uses this, under what constraints, what decision/workflow it supports]
+
+Files to inspect first:
+- README.md
+- GROKBUILD_DOCTRINE.md
+- specs/product_brief.md
+- skills/triage-skill/SKILL.md
+- src/
+- tests/
+
+Grok Build invocation hints:
+- Attach context: @specs/product_brief.md @src/core/ @tests/
+- Run verification: pytest, ruff check
+- After edits: /check-work [focus area]
+- Before handoff: /review --local
+
+Implementation requirements:
+- [requirement 1]
+- [requirement 2]
+- [requirement 3]
+
+Acceptance criteria:
+- App runs locally with documented command
+- Tests pass with pytest
+- No unnecessary dependencies
+- Core logic separated from UI
+- Sample fixtures included
+- README updated with Grok-generated sections clearly marked
+- Known limitations documented
+- Governance fields populated (data source, assumptions, model usage, test status)
+
+Do not:
+- Introduce cloud dependencies
+- Hardcode secrets
+- Remove existing tests
+- Add large frameworks unless justified
+
+Deliver:
+- Changed files summary
+- Commands run (or sandbox validation steps)
+- Test results
+- git diff summary
+- Known gaps
+- Suggested next leverage point
 ```
