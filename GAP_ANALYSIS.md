@@ -115,10 +115,10 @@
 
 ### P2 — Governance & eval layer
 
-- [ ] `/evals/` scorecard templates
-- [ ] RCA packet export to `artifacts/exports/`
-- [ ] JSON schemas in `src/schemas/`
-- [ ] Golden output tests
+- [x] `/evals/` scorecard templates
+- [x] RCA packet export to `artifacts/exports/`
+- [x] JSON schemas in `src/schemas/`
+- [x] Golden output tests
 
 ### P3 — Portfolio path
 
@@ -141,4 +141,4 @@
 
 ## 8. Single Highest-Leverage Remaining Gap
 
-**P2 governance & eval layer** — RCA packet export, `/evals/` scorecards, and `src/schemas/` JSON contracts. Without these, the starter proves triage but not full high-trust operational handoff.
+**P3 portfolio path** — build artifact #1 (Mission Console) or #3 (Data Fusion), add GitHub remote, screenshots, and demo video. The starter now proves triage + governance handoff; portfolio sub-repos prove domain signal strength.

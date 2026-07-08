@@ -16,9 +16,17 @@ echo "==> ruff"
 python -m ruff check src tests
 
 echo "==> py_compile"
-python -m py_compile src/apps/streamlit_app.py src/core/ingestion.py
+python -m py_compile src/apps/streamlit_app.py src/core/ingestion.py src/core/exports.py
 
 echo "==> fixture present"
 test -f fixtures/sample_telemetry.csv
+
+echo "==> schemas present"
+test -f src/schemas/input_schema.json
+test -f src/schemas/output_schema.json
+test -f src/schemas/rca_packet_schema.json
+
+echo "==> golden output present"
+test -f tests/golden_outputs/fixture_scoring_summary.json
 
 echo "OK: all verification checks passed"

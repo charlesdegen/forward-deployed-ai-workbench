@@ -49,13 +49,20 @@
 - [ ] `skills/triage-skill/SKILL.md` documents ChatGPT, Codex, Grok Build, and Claude Code roles
 - [ ] Build briefs exist under `prompts/` for each adapter
 
+## Governance & eval (P2)
+
+- [ ] `/evals/` scorecards exist (artifact, security, field readiness)
+- [ ] `src/schemas/` JSON schemas validate input, output, and RCA packets
+- [ ] `tests/golden_outputs/fixture_scoring_summary.json` regression passes
+- [ ] RCA packet export from Operator Log tab writes to `artifacts/exports/`
+- [ ] RCA JSON validates against `rca_packet_schema.json`
+
 ## Out of scope (starter)
 
 - Live LLM inference inside Streamlit
 - DuckDB/Polars query layer
-- RCA packet PDF/HTML export (P2)
+- RCA packet PDF export
 - NiceGUI variant (portfolio artifact #1)
-- JSON schema files (P2)
 
 ## Demo script (3 minutes)
 
@@ -63,5 +70,6 @@
 2. Show governance panel with live metadata.
 3. Open Telemetry tab; point out anomaly at ~index 30 in alerts queue.
 4. Append one operator action; confirm log persistence.
-5. Open AI tab; show offline checklist or exported prompts.
-6. Run `./scripts/verify.sh` and show passing output.
+5. Export RCA packet from Operator Log tab; confirm files in `artifacts/exports/`.
+6. Open AI tab; show offline checklist or exported prompts.
+7. Run `./scripts/verify.sh` and show passing output.

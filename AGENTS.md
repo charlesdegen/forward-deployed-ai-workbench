@@ -22,7 +22,9 @@ Convert ambiguous operational requirements into **local-first, high-trust, testa
 | `specs/` | Product briefs, data contracts, acceptance criteria |
 | `prompts/` | Reusable architect and repair briefs per agent adapter |
 | `skills/` | Domain skills (`SKILL.md`) for triage, RCA, evals |
-| `src/core/` | Ingestion, scoring, transforms, exports |
+| `src/core/` | Ingestion, scoring, exports (`exports.py` RCA packets) |
+| `src/schemas/` | JSON Schema contracts for input, output, RCA |
+| `evals/` | Artifact, security, field-readiness scorecards |
 | `src/apps/` | Streamlit, NiceGUI, and other operator UIs |
 | `fixtures/` | Sample datasets for tests and demos |
 | `tests/` | pytest suites and golden outputs |

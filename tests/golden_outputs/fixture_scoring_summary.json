@@ -1,0 +1,12 @@
+{
+  "record_count": 50,
+  "alert_count": 8,
+  "max_risk_score": 60,
+  "alert_indices": [10, 11, 12, 30, 31, 32, 33, 34],
+  "index_30": {
+    "cpu_anomaly": true,
+    "temp_critical": true,
+    "risk_score": 60
+  },
+  "index_10_sensor_anomaly": true
+}

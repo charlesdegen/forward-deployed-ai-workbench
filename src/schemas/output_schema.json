@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forward-deployed-ai-workbench/schemas/output_schema.json",
+  "title": "ScoredTelemetryRow",
+  "description": "Telemetry row after anomaly scoring in src/core/ingestion.py",
+  "type": "object",
+  "required": [
+    "timestamp",
+    "battery_level",
+    "cpu_utilization",
+    "sensor_drift",
+    "comms_link",
+    "temperature",
+    "cpu_anomaly",
+    "temp_warning",
+    "temp_critical",
+    "temp_anomaly",
+    "sensor_anomaly",
+    "comms_anomaly",
+    "risk_score"
+  ],
+  "properties": {
+    "timestamp": { "type": "string" },
+    "battery_level": { "type": "number" },
+    "cpu_utilization": { "type": "number" },
+    "sensor_drift": { "type": "number" },
+    "comms_link": { "type": "number" },
+    "temperature": { "type": "number" },
+    "cpu_anomaly": { "type": "boolean" },
+    "temp_warning": { "type": "boolean" },
+    "temp_critical": { "type": "boolean" },
+    "temp_anomaly": { "type": "boolean" },
+    "sensor_anomaly": { "type": "boolean" },
+    "comms_anomaly": { "type": "boolean" },
+    "risk_score": { "type": "integer", "minimum": 0, "maximum": 100 }
+  },
+  "additionalProperties": true
+}

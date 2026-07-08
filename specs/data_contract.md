@@ -75,12 +75,29 @@ All input columns are preserved. Added columns:
 | `disposition` | enum | Observed, Mitigated, Escalated, Deferred |
 | `action` | string | Free-text diagnostic note |
 
-## Future extensions (not in v1)
+## JSON schemas
+
+Machine-readable contracts in `src/schemas/`:
+
+| File | Validates |
+|---|---|
+| `input_schema.json` | Raw telemetry row |
+| `output_schema.json` | Scored telemetry row |
+| `rca_packet_schema.json` | Engineering RCA export from `src/core/exports.py` |
+
+Golden regression summary: `tests/golden_outputs/fixture_scoring_summary.json`
+
+## RCA export
+
+- **Builder:** `build_rca_packet()` in `src/core/exports.py`
+- **Output dir:** `artifacts/exports/` (gitignored contents; `.gitkeep` only)
+- **Formats:** JSON + Markdown per export
+
+## Future extensions
 
 - DuckDB/Polars adapters for files > 100 MB
-- JSON schema files under `src/schemas/`
 - Parquet ingestion
-- Golden-output regression hashes in `tests/golden_outputs/`
+- Full golden CSV hash comparison for entire scored frame
 
 ## Governance disclosure (UI)
 

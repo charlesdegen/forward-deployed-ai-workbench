@@ -1,3 +1,4 @@
+import json
 import streamlit as st
 import pandas as pd
 import sys
@@ -6,6 +7,7 @@ from datetime import datetime, timezone
 
 # Adjust path to find core modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from src.core.exports import build_rca_packet, format_rca_markdown, write_rca_exports
 from src.core.ingestion import (
     TEMP_CRITICAL_THRESHOLD,
     TEMP_WARNING_THRESHOLD,
@@ -18,6 +20,7 @@ from src.core.ingestion import (
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 DEFAULT_FIXTURE_PATH = os.path.join(REPO_ROOT, 'fixtures/sample_telemetry.csv')
 ACTION_LOG_PATH = os.path.join(REPO_ROOT, 'artifacts/operator_action_log.csv')
+EXPORT_DIR = os.path.join(REPO_ROOT, 'artifacts/exports')
 
 # Page configuration
 st.set_page_config(
@@ -123,7 +126,7 @@ with st.sidebar:
     - **Sensor Freq**: `1 Hz (assumed)`
     - **Last Refresh**: `{last_refresh_display}`
     - **Deployment Posture**: Local-First / High-Trust
-    - **Test Status**: `pytest: ingestion suite`
+    - **Test Status**: `pytest: ingestion + golden + export suite`
     - **Operator Owner**: FDE-Team-01
     """)
 
@@ -229,7 +232,39 @@ with tab_log:
         action_log = pd.read_csv(ACTION_LOG_PATH)
         st.dataframe(action_log.sort_values(by="timestamp", ascending=False), hide_index=True)
     else:
+        action_log = None
         st.info("No operator actions logged yet.")
+
+    st.divider()
+    st.subheader("Export RCA Packet")
+    st.caption("Writes JSON + Markdown to artifacts/exports/ for engineering handoff.")
+
+    if st.button("Generate RCA export"):
+        packet = build_rca_packet(
+            scored_df,
+            data_source_label,
+            operator_log=action_log,
+        )
+        paths = write_rca_exports(packet, EXPORT_DIR)
+        st.session_state["rca_packet"] = packet
+        st.session_state["rca_paths"] = paths
+        st.success(f"Exported to {paths['json']} and {paths['markdown']}")
+
+    if "rca_packet" in st.session_state:
+        packet = st.session_state["rca_packet"]
+        markdown = format_rca_markdown(packet)
+        st.download_button(
+            "Download RCA (Markdown)",
+            data=markdown,
+            file_name="rca_packet.md",
+            mime="text/markdown",
+        )
+        st.download_button(
+            "Download RCA (JSON)",
+            data=json.dumps(packet, indent=2),
+            file_name="rca_packet.json",
+            mime="application/json",
+        )
 
 with tab_ai:
     st.subheader("ChatGPT / Codex Triage Loop")

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forward-deployed-ai-workbench/schemas/rca_packet_schema.json",
+  "title": "RCAPacket",
+  "description": "Engineering handoff packet exported from the Mission Autonomy console",
+  "type": "object",
+  "required": [
+    "packet_version",
+    "generated_at",
+    "governance",
+    "assumptions",
+    "alerts",
+    "operator_actions",
+    "primary_finding",
+    "recommendations"
+  ],
+  "properties": {
+    "packet_version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "governance": {
+      "type": "object",
+      "required": [
+        "data_source",
+        "record_count",
+        "time_range",
+        "system_state",
+        "alert_count",
+        "test_status",
+        "model_usage"
+      ],
+      "properties": {
+        "data_source": { "type": "string" },
+        "record_count": { "type": "integer", "minimum": 0 },
+        "time_range": {
+          "type": "object",
+          "required": ["start", "end"],
+          "properties": {
+            "start": { "type": "string" },
+            "end": { "type": "string" }
+          }
+        },
+        "system_state": { "type": "string", "enum": ["NOMINAL", "DEGRADED"] },
+        "alert_count": { "type": "integer", "minimum": 0 },
+        "test_status": { "type": "string" },
+        "model_usage": { "type": "string" },
+        "export_version": { "type": "string" }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "alerts": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "operator_actions": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "primary_finding": {
+      "type": ["object", "null"]
+    },
+    "recommendations": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

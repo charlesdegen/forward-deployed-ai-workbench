@@ -101,9 +101,11 @@ Full optional operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE
 -   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`).
 -   `/src/core`: Core analytical modules (data ingestion, scoring, transformations).
 -   `/src/apps`: Front-end interfaces (Streamlit, NiceGUI, or single-file HTML).
--   `/artifacts`: Local operator logs, exports, screenshots, and generated handoff packets.
+-   `/artifacts`: Local operator logs and `exports/` RCA packets (runtime-generated).
+-   `/evals`: Artifact, security, and field-readiness scorecard templates.
 -   `/fixtures`: Sample datasets (telemetry logs, CSV extracts) for testing.
--   `/tests`: pytest testing suites.
+-   `src/schemas/`: JSON Schema contracts for telemetry input, scored output, and RCA packets.
+-   `/tests`: pytest suites including `golden_outputs/` regression.
 
 ## ChatGPT / Codex Workflow
 
