@@ -27,6 +27,8 @@ Convert ambiguous operational requirements into **local-first, high-trust, testa
 | `fixtures/` | Sample datasets for tests and demos |
 | `tests/` | pytest suites and golden outputs |
 | `artifacts/` | Runtime exports and operator logs (generated locally) |
+| `CLAUDE.md` | Claude Code session rules (mirrors this file) |
+| `scripts/verify.sh` | pytest + ruff + py_compile gate |
 | `GROKBUILD_DOCTRINE.md` | Grok Build operating doctrine |
 | `CLAUDEBUILD_DOCTRINE.md` | Claude Build operating doctrine |
 
@@ -35,10 +37,7 @@ Convert ambiguous operational requirements into **local-first, high-trust, testa
 Run before claiming an artifact is ready:
 
 ```bash
-source .venv/bin/activate
-python -m pytest
-python -m ruff check src tests
-python -m py_compile src/apps/streamlit_app.py src/core/ingestion.py
+./scripts/verify.sh
 ```
 
 Summarize: changed files, commands run, test results, `git diff` highlights, known gaps.

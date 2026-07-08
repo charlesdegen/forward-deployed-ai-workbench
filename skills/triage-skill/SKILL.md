@@ -1,34 +1,65 @@
 ---
 name: triage-skill
-description: "Assists edge operators in diagnosing telemetry anomalies and generating troubleshooting checklists for degraded operational states."
+description: "Assists edge operators in diagnosing telemetry anomalies and generating troubleshooting checklists for degraded operational states. Use for field telemetry triage, RCA packets, and repo repairs in the Mission Autonomy console."
 ---
 
 # Telemetry Triage Skill
 
-This skill provides instructions for identifying and troubleshooting anomalies in autonomous edge systems (UAVs, ground vehicles, and sensors).
+Instructions for identifying and troubleshooting anomalies in autonomous edge systems (UAVs, ground vehicles, and sensors).
 
-## ChatGPT / Codex Operating Model
-- Use ChatGPT to transform raw field context into diagnostic hypotheses, acceptance criteria, eval rubrics, and operator-facing briefing language.
-- Use Codex to modify the workbench repository, add or repair tests, update Streamlit/NiceGUI views, and verify behavior locally.
-- Treat model output as advisory until an operator or engineer approves the action. Always expose the telemetry values and assumptions behind a recommendation.
+**Specs:** `specs/operator_workflow.md`, `specs/data_contract.md`  
+**Starter app:** `src/apps/streamlit_app.py`  
+**Core logic:** `src/core/ingestion.py`
 
 ## Triage Priority Rules
-1.  **Safety & Power**: Check power grids, battery depletion rates, and temperature status first. Treat temperature > 80°C as a warning band and > 85°C as a critical band that may require immediate shutdown.
-2.  **Communications**: Check link quality and signal-to-noise ratio. If degraded, check line-of-sight and antenna configurations.
-3.  **Sensor Alignment**: Check IMU drift, GPS lock, and camera feed frames. If drifts are high, recommend sensor recalibration.
-4.  **Compute & Software**: Check CPU/GPU utilization, memory leakage, and thread counts.
+
+1. **Safety & Power**: Check power grids, battery depletion rates, and temperature first. Treat temperature > 80°C as warning and > 85°C as critical — may require immediate shutdown.
+2. **Communications**: Check link quality (`comms_link` < 80 %). If degraded, check line-of-sight and antenna configuration.
+3. **Sensor Alignment**: Check IMU drift (`sensor_drift` > 0.3), GPS lock, and camera frames. Recommend recalibration when drift is high.
+4. **Compute & Software**: Check CPU utilization (> 85 %), memory leakage, and thread counts.
 
 ## Root Cause Analysis (RCA) Protocol
-When generating an engineering report:
-- Identify the primary failing component.
-- Highlight telemetry values exceeding normal operating parameters.
-- Provide step-by-step diagnostic actions performed.
-- Draft recommendations for the base engineering team.
 
-## Codex Repository Constraints
-When using this skill inside the workbench repository:
-- Keep telemetry scoring logic in `src/core`.
-- Keep operator interface changes in `src/apps`.
-- Add focused tests under `tests` for any changed scoring, parsing, or export behavior.
-- Preserve offline fallback triage behavior when `OPENAI_API_KEY` is not configured.
-- Summarize changed files, verification commands, and remaining deployment risks after edits.
+When generating an engineering report:
+
+- Identify the primary failing component.
+- Highlight telemetry values exceeding thresholds in `specs/data_contract.md`.
+- List diagnostic actions performed (cross-reference operator action log).
+- Draft recommendations for the base engineering team.
+- Include data source, time range, and assumptions.
+
+## Agent Operating Models
+
+### ChatGPT (mission architect)
+
+- Transform field context into diagnostic hypotheses, acceptance criteria, and operator-facing checklists.
+- Review screenshots, action logs, and test output for operator readiness.
+- Generate Mermaid diagrams, demo scripts, and threat-model prompts.
+
+### Codex (repo-native implementation)
+
+- Modify scoring in `src/core/`, UI in `src/apps/`, tests in `tests/`.
+- Run `./scripts/verify.sh` after changes.
+- Preserve offline fallback when `OPENAI_API_KEY` is unset.
+- Summarize changed files, verification output, and deployment risks.
+
+### Grok Build (terminal agent)
+
+- Attach context: `@specs/ @src/core/ @skills/triage-skill/SKILL.md`
+- Use `prompts/grok_build_brief.md` as the task template.
+- Gate with `/check-work` and `/review --local` before handoff.
+- Follow `AGENTS.md` and `GROKBUILD_DOCTRINE.md`.
+
+### Claude Code (repo-native agent)
+
+- Load `CLAUDE.md` and `prompts/claude_build_brief.md` every session.
+- Run `./scripts/verify.sh` before claiming completion.
+- Follow `CLAUDEBUILD_DOCTRINE.md` for multi-surface workflows.
+
+## Repository Constraints (all agents)
+
+- Keep telemetry scoring and schema validation in `src/core/ingestion.py`.
+- Keep operator interface changes in `src/apps/`.
+- Add focused tests for changed scoring, parsing, logging, or export behavior.
+- Treat all model output as **advisory** until an operator or engineer approves the action.
+- Expose telemetry values and assumptions behind every recommendation.

@@ -48,8 +48,7 @@ streamlit run src/apps/streamlit_app.py
 
 ### 5. Verify the Starter
 ```bash
-python -m pytest
-python -m py_compile src/apps/streamlit_app.py src/core/ingestion.py
+./scripts/verify.sh
 ```
 
 ## Optional Agent Adapters
@@ -92,11 +91,13 @@ Full optional operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE
 ## Repository Structure
 
 -   `AGENTS.md`: Shared agent rules loaded by Codex, Grok Build, and Claude Code — local-first constraints, verification gates, adapter routing.
+-   `CLAUDE.md`: Claude Code session rules (mirrors `AGENTS.md`).
 -   `GAP_ANALYSIS.md`: Living gap analysis — repo fidelity vs. doctrine and priority roadmap.
+-   `scripts/verify.sh`: Verification gate — pytest, ruff, py_compile, fixture check.
 -   `GROKBUILD_DOCTRINE.md`: GrokBuild manifesto — FDE doctrine, toolchain layers, governance, and Grok Build quick-reference.
 -   `CLAUDEBUILD_DOCTRINE.md`: Optional Claude-oriented doctrine for comparison workflows.
--   `/specs`: Product specifications, data contracts, and operational workflows.
--   `/prompts`: Reusable ChatGPT architect prompts and Codex repair/build briefs.
+-   `/specs`: `product_brief.md`, `data_contract.md`, `acceptance_criteria.md`, `operator_workflow.md`.
+-   `/prompts`: ChatGPT, Codex, Grok Build, and Claude Code build/repair briefs.
 -   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`).
 -   `/src/core`: Core analytical modules (data ingestion, scoring, transformations).
 -   `/src/apps`: Front-end interfaces (Streamlit, NiceGUI, or single-file HTML).

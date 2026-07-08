@@ -105,13 +105,13 @@
 - [x] Dynamic governance metadata in sidebar
 - [x] Document gaps in this file
 
-### P1 — Make doctrines executable (next)
+### P1 — Make doctrines executable
 
-- [ ] `specs/data_contract.md`, `acceptance_criteria.md`, `operator_workflow.md`
-- [ ] `/prompts/grok_build_brief.md`, `claude_build_brief.md`
-- [ ] Extend `triage-skill` for all three adapters
-- [ ] `scripts/verify.sh` (`pytest` + `ruff` + `py_compile`)
-- [ ] `CLAUDE.md` for Claude Code auto-loading
+- [x] `specs/data_contract.md`, `acceptance_criteria.md`, `operator_workflow.md`
+- [x] `/prompts/grok_build_brief.md`, `claude_build_brief.md`
+- [x] Extend `triage-skill` for all three adapters
+- [x] `scripts/verify.sh` (`pytest` + `ruff` + `py_compile`)
+- [x] `CLAUDE.md` for Claude Code auto-loading
 
 ### P2 — Governance & eval layer
 
@@ -141,4 +141,4 @@
 
 ## 8. Single Highest-Leverage Remaining Gap
 
-**`CLAUDE.md` + complete `/specs` and `/prompts` sets** — without these, Claude Code and Grok Build sessions still lack artifact-specific contracts beyond the starter triage brief.
+**P2 governance & eval layer** — RCA packet export, `/evals/` scorecards, and `src/schemas/` JSON contracts. Without these, the starter proves triage but not full high-trust operational handoff.
