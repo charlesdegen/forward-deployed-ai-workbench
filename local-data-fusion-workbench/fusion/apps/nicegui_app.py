@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
 
@@ -30,11 +31,23 @@ STATE: dict = {
     "lineage": "",
     "join_spec": {"how": "left", "left_key": "customer_id", "right_key": "customer_id"},
     "export_paths": {},
+    "data_source": "none",
+    "last_refresh": "never",
 }
 
 
 def _dataset_names() -> list[str]:
     return list(STATE["datasets"].keys())
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _mark_refresh(data_source: str) -> None:
+    """Record which source produced the current state and when it was ingested."""
+    STATE["data_source"] = data_source
+    STATE["last_refresh"] = _utc_now()
 
 
 def _load_fixture_bundle() -> None:
@@ -54,6 +67,8 @@ def _load_fixture_bundle() -> None:
     if suggestions:
         STATE["join_spec"].update(suggestions[0])
 
+    _mark_refresh("fixtures/ (customers.csv, transactions.csv, events.json)")
+
 
 def _persist_to_duckdb() -> None:
     conn = connect()
@@ -70,10 +85,13 @@ def _persist_to_duckdb() -> None:
 def governance_panel() -> None:
     names = _dataset_names()
     fused_rows = STATE["fused"].height if STATE["fused"] is not None else 0
+    total_rows = sum(frame.height for frame in STATE["datasets"].values())
     ui.markdown(
         f"""
 **Fusion Governance**
-- Datasets loaded: `{len(names)}`
+- Data source: `{STATE["data_source"]}`
+- Last refresh: `{STATE["last_refresh"]}`
+- Datasets loaded: `{len(names)}` (`{total_rows}` source rows)
 - DuckDB store: `artifacts/data_fusion.duckdb`
 - Fused rows: `{fused_rows}`
 - Posture: Local-first / High-trust
@@ -244,7 +262,7 @@ def lineage_panel() -> None:
         )
         STATE["export_paths"] = {**paths, "lineage": lineage_path}
         ui.download(fused.to_pandas().to_csv(index=False).encode("utf-8"), "fused_preview.csv")
-        ui.notify(f"Exported CSV, Parquet, and lineage to artifacts/exports/", type="positive")
+        ui.notify("Exported CSV, Parquet, and lineage to artifacts/exports/", type="positive")
 
     ui.button("Export fused dataset + lineage", on_click=export_all).props("outline color=orange")
 
@@ -278,6 +296,7 @@ def fusion_workbench() -> None:
                 frame, label = load_dataset(BytesIO(upload_state["bytes"]), name=upload_state["name"])
                 STATE["datasets"][label] = frame
                 STATE["profiles"][label] = profile_frame(frame, label)
+                _mark_refresh(f"upload:{upload_state['name']}")
                 _persist_to_duckdb()
                 profile_panel.refresh()
                 fusion_controls.refresh()

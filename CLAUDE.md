@@ -48,9 +48,14 @@ Or manually:
 ```bash
 source .venv/bin/activate
 python -m pytest
-python -m ruff check src tests
+python -m ruff check src tests scripts \
+  local-data-fusion-workbench financial-crime-ops-console llm-red-team-eval-harness
 python -m py_compile src/apps/streamlit_app.py src/core/ingestion.py
 ```
+
+The commit hook (`.claude/hooks/require-verify.sh`) compares a SHA-256 of every
+verified source file against the hash recorded by the last passing `verify.sh`.
+Editing any source after verifying re-runs the gate; there is no time window.
 
 Report: changed files, verify output, `git diff` summary, known gaps.
 
@@ -61,6 +66,9 @@ Report: changed files, verify output, `git diff` summary, known gaps.
 3. Wire new data paths through `fixtures/` and `tests/`.
 4. Use `skills/triage-skill/SKILL.md` when changing triage or alert behavior.
 5. Update README only when run instructions or workflow change.
+6. Every scoring branch must be reachable from a fixture and pinned by a golden test.
+   A threshold change that no test notices is a defect, not a passing build.
+7. Fixtures declare ground truth; they never substitute for the logic under test.
 
 ## Claude Code Patterns
 

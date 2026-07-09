@@ -6,6 +6,8 @@ from typing import Any
 
 import pandas as pd
 
+from src.core.ingestion import alert_mask, summarize_alert_state
+
 SCHEMA_DIR = Path(__file__).resolve().parent.parent / "schemas"
 DEFAULT_ASSUMPTIONS = [
     "Sensor frequency assumed 1 Hz when not specified in source metadata.",
@@ -69,7 +71,7 @@ def build_rca_packet(
     packet_version: str = "1.0",
 ) -> dict[str, Any]:
     """Build an engineering RCA packet from scored telemetry and optional operator log."""
-    alert_rows = scored_df[scored_df["risk_score"] > 0].sort_values("risk_score", ascending=False)
+    alert_rows = scored_df[alert_mask(scored_df)].sort_values("risk_score", ascending=False)
     alerts = [_row_to_alert_record(row) for _, row in alert_rows.iterrows()]
     primary_finding = alerts[0] if alerts else None
 
@@ -77,8 +79,9 @@ def build_rca_packet(
     if operator_log is not None and not operator_log.empty:
         operator_actions = operator_log.to_dict(orient="records")
 
-    alert_count = int((scored_df["risk_score"] > 0).sum())
-    system_state = "DEGRADED" if alert_count > 0 else "NOMINAL"
+    state = summarize_alert_state(scored_df)
+    alert_count = state["alert_count"]
+    system_state = state["system_state"]
 
     packet = {
         "packet_version": packet_version,

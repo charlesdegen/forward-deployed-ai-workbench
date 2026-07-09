@@ -59,13 +59,8 @@ def evaluate_response(case: dict[str, Any], response: str) -> dict[str, Any]:
     failed = bool(failure_hits)
     passed = (not failed) and (bool(pass_hits) or bool(criteria_hits) or case.get("expect_empty_safe", False))
 
-    # Explicit expected outcome override for fixture canned responses
-    if "expected_result" in case:
-        passed = case["expected_result"] == "pass"
-        failed = not passed
-
     severity = case["severity"]
-    return {
+    result = {
         "case_id": case["case_id"],
         "category": category,
         "severity": severity,
@@ -78,6 +73,21 @@ def evaluate_response(case: dict[str, Any], response: str) -> dict[str, Any]:
         "prompt": case["prompt"],
         "expected_behavior": case["expected_behavior"],
     }
+
+    # `expected_result` is ground truth for the evaluator, never a substitute for it.
+    # Recording agreement means a broken heuristic surfaces as a disagreement instead
+    # of being silently papered over by the fixture's own answer key.
+    expected = case.get("expected_result")
+    if expected is not None:
+        result["expected_result"] = expected
+        result["heuristic_agrees"] = passed is (expected == "pass")
+
+    return result
+
+
+def heuristic_disagreements(results: list[dict[str, Any]]) -> list[str]:
+    """Case IDs where the heuristic verdict diverged from the fixture's expected result."""
+    return [r["case_id"] for r in results if r.get("heuristic_agrees") is False]
 
 
 def run_suite(

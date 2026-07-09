@@ -11,10 +11,12 @@ from src.core.exports import build_rca_packet, format_rca_markdown, write_rca_ex
 from src.core.ingestion import (
     TEMP_CRITICAL_THRESHOLD,
     TEMP_WARNING_THRESHOLD,
+    alert_mask,
     generate_mock_telemetry,
     load_telemetry_csv,
     parse_telemetry_csv,
     score_anomalies,
+    summarize_alert_state,
 )
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
@@ -113,8 +115,9 @@ if pd.isna(last_refresh):
 else:
     last_refresh_display = pd.Timestamp(last_refresh).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-alert_count = int((scored_df["risk_score"] > 0).sum())
-system_state = "DEGRADED" if alert_count > 0 else "NOMINAL"
+alert_state = summarize_alert_state(scored_df)
+alert_count = alert_state["alert_count"]
+system_state = alert_state["system_state"]
 state_color = "#ff7b72" if alert_count > 0 else "#3fb950"
 
 with st.sidebar:
@@ -184,7 +187,7 @@ with tab_data:
 
     with col_table:
         st.subheader("Critical Alerts Queue")
-        alerts = scored_df[scored_df['risk_score'] > 0][['timestamp', 'cpu_utilization', 'temperature', 'risk_score']]
+        alerts = scored_df[alert_mask(scored_df)][['timestamp', 'cpu_utilization', 'temperature', 'risk_score']]
         if not alerts.empty:
             st.dataframe(
                 alerts.sort_values(by='timestamp', ascending=False),

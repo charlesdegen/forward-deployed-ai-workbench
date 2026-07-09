@@ -44,18 +44,34 @@ def test_store_and_query_scored_telemetry(tmp_path, fixture_scored):
         assert session["data_source"] == "fixtures/sample_telemetry.csv"
         assert session["record_count"] == 50
         assert session["system_state"] == "DEGRADED"
-        assert session["alert_count"] == 8
+        assert session["alert_count"] == 13
 
         scored = fetch_scored_telemetry(conn)
         assert len(scored) == 50
-        assert int(scored["risk_score"].max()) == 60
+        assert int(scored["risk_score"].max()) == 100
 
         alerts = fetch_alerts(conn)
-        assert len(alerts) == 8
+        assert len(alerts) == 13
 
         summary = fetch_summary(conn)
-        assert summary["max_risk_score"] == 60
+        assert summary["max_risk_score"] == 100
         assert summary["min_battery"] > 0
+    finally:
+        conn.close()
+
+
+def test_comms_anomaly_round_trips_through_duckdb(tmp_path, fixture_scored):
+    """The SQL layer must preserve the comms flag, not just the Python scoring."""
+    conn = connect(tmp_path / "mission.duckdb")
+    try:
+        store_scored_telemetry(conn, fixture_scored, "fixtures/sample_telemetry.csv")
+        comms_rows = conn.execute(
+            "SELECT row_index, risk_score FROM telemetry_scored WHERE comms_anomaly ORDER BY row_index"
+        ).fetchall()
+
+        assert [row[0] for row in comms_rows] == [40, 41, 42, 45]
+        # Row 41 is comms-only, so its risk is exactly the comms weight.
+        assert dict(comms_rows)[41] == 20
     finally:
         conn.close()
 

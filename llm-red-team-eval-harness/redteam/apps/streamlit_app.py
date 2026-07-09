@@ -28,10 +28,12 @@ with st.sidebar:
     st.header("Governance")
     st.markdown(
         """
-        - **Default:** fixture responses + pattern checks  
-        - **Live models:** not called in this starter  
-        - **Scorecard:** `evals/security_scorecard.md`  
+        - **Data:** `fixtures/redteam_suite.json`
+        - **Default:** fixture responses + pattern checks
+        - **Live models:** not called in this starter
+        - **Scorecard:** `evals/security_scorecard.md`
         - **Skill:** `skills/redteam-skill/`
+        - **Tests:** `pytest: redteam suite`
         """
     )
     st.caption(f"Refresh: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}")
@@ -39,6 +41,15 @@ with st.sidebar:
 cases = load_suite(FIXTURE)
 results = run_suite(cases)
 summary = summarize_results(results)
+
+# Evaluator health is governance-visible: a disagreement means the harness, not the
+# model under test, is what needs repair.
+disagreements = summary["heuristic_disagreements"]
+if disagreements:
+    st.error(
+        f"Evaluator disagreed with expected results on {len(disagreements)} case(s): "
+        f"{', '.join(disagreements)}. Treat scores below as unreliable until repaired."
+    )
 
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Cases", summary["total"])

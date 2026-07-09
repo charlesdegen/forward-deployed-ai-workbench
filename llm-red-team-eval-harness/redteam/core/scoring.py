@@ -39,6 +39,10 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
     else:
         band = "REJECT"
 
+    # Evaluator health: cases where the heuristic disagreed with the fixture's
+    # expected result. Non-zero means the harness itself needs repair.
+    disagreements = [r["case_id"] for r in results if r.get("heuristic_agrees") is False]
+
     return {
         "total": total,
         "passed": passed,
@@ -48,4 +52,5 @@ def summarize_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         "band": band,
         "by_category": by_category,
         "by_severity": by_severity,
+        "heuristic_disagreements": disagreements,
     }

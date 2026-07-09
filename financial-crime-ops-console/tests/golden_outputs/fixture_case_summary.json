@@ -1,0 +1,82 @@
+{
+  "record_count": 12,
+  "band_counts": {
+    "CRITICAL": 2,
+    "HIGH": 1,
+    "LOW": 4,
+    "MEDIUM": 5
+  },
+  "queue_size": 8,
+  "queue_order": [
+    "TX-1007",
+    "TX-1003",
+    "TX-1010",
+    "TX-1008",
+    "TX-1005",
+    "TX-1011",
+    "TX-1002",
+    "TX-1004"
+  ],
+  "cases": {
+    "TX-1001": {
+      "risk_score": 0,
+      "risk_band": "LOW",
+      "risk_flags": "none"
+    },
+    "TX-1002": {
+      "risk_score": 26,
+      "risk_band": "MEDIUM",
+      "risk_flags": "near_threshold_structuring|channel_wire"
+    },
+    "TX-1003": {
+      "risk_score": 86,
+      "risk_band": "CRITICAL",
+      "risk_flags": "amount_critical|cross_border|high_risk_jurisdiction|prior_sar|channel_wire"
+    },
+    "TX-1004": {
+      "risk_score": 26,
+      "risk_band": "MEDIUM",
+      "risk_flags": "near_threshold_structuring|channel_cash_deposit"
+    },
+    "TX-1005": {
+      "risk_score": 43,
+      "risk_band": "MEDIUM",
+      "risk_flags": "amount_high|cross_border|channel_wire"
+    },
+    "TX-1006": {
+      "risk_score": 0,
+      "risk_band": "LOW",
+      "risk_flags": "none"
+    },
+    "TX-1007": {
+      "risk_score": 93,
+      "risk_band": "CRITICAL",
+      "risk_flags": "amount_critical|cross_border|high_risk_jurisdiction|repeat_sar_subject|channel_crypto_onramp"
+    },
+    "TX-1008": {
+      "risk_score": 44,
+      "risk_band": "MEDIUM",
+      "risk_flags": "near_threshold_structuring|cross_border|prior_sar|channel_wire"
+    },
+    "TX-1009": {
+      "risk_score": 0,
+      "risk_band": "LOW",
+      "risk_flags": "none"
+    },
+    "TX-1010": {
+      "risk_score": 63,
+      "risk_band": "HIGH",
+      "risk_flags": "amount_high|cross_border|high_risk_jurisdiction|channel_wire"
+    },
+    "TX-1011": {
+      "risk_score": 30,
+      "risk_band": "MEDIUM",
+      "risk_flags": "amount_elevated|cross_border|channel_wire"
+    },
+    "TX-1012": {
+      "risk_score": 0,
+      "risk_band": "LOW",
+      "risk_flags": "none"
+    }
+  }
+}

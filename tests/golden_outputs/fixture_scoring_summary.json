@@ -1,12 +1,51 @@
 {
   "record_count": 50,
-  "alert_count": 8,
-  "max_risk_score": 60,
-  "alert_indices": [10, 11, 12, 30, 31, 32, 33, 34],
+  "alert_count": 13,
+  "max_risk_score": 100,
+  "alert_indices": [
+    10,
+    11,
+    12,
+    30,
+    31,
+    32,
+    33,
+    34,
+    40,
+    41,
+    42,
+    45,
+    47
+  ],
+  "flag_counts": {
+    "cpu_anomaly": 6,
+    "temp_warning": 7,
+    "temp_critical": 6,
+    "sensor_anomaly": 4,
+    "comms_anomaly": 4
+  },
   "index_30": {
     "cpu_anomaly": true,
     "temp_critical": true,
     "risk_score": 60
+  },
+  "index_41": {
+    "comms_anomaly": true,
+    "cpu_anomaly": false,
+    "risk_score": 20
+  },
+  "index_45": {
+    "cpu_anomaly": true,
+    "temp_warning": true,
+    "temp_critical": true,
+    "sensor_anomaly": true,
+    "comms_anomaly": true,
+    "risk_score": 100
+  },
+  "index_47": {
+    "temp_warning": true,
+    "temp_critical": false,
+    "risk_score": 20
   },
   "index_10_sensor_anomaly": true
 }
