@@ -19,7 +19,7 @@ Convert ambiguous operational requirements into **local-first, high-trust, testa
 
 | Path | Purpose |
 |---|---|
-| `specs/` | Product briefs, data contracts, acceptance criteria |
+| `specs/` | Product briefs, data contracts, acceptance criteria, threat model |
 | `prompts/` | Reusable architect and repair briefs per agent adapter |
 | `skills/` | Domain skills (`SKILL.md`) for triage, RCA, evals |
 | `src/core/` | Ingestion, scoring, exports (`exports.py`), DuckDB store (`duckdb_store.py`) |

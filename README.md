@@ -1,5 +1,7 @@
 # Forward-Deployed AI Systems Workbench
 
+**Repository:** https://github.com/charlesdegen/forward-deployed-ai-workbench
+
 This repository is a local-first build environment and template designed for converting ambiguous operational problems into working software, decision surfaces, evaluation harnesses, and deployable artifacts. It is optimized for an OpenAI build loop where **ChatGPT** turns mission ambiguity into architecture, specs, eval plans, and review checklists, while **Codex** works repo-native to implement changes, run tests, inspect failures, and produce deployable artifacts.
 
 The workbench can still host other model providers or agent runtimes, but the default operating doctrine is:
@@ -102,7 +104,7 @@ Full optional operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE
 -   `scripts/verify.sh`: Verification gate — pytest, ruff, py_compile, fixture check.
 -   `GROKBUILD_DOCTRINE.md`: GrokBuild manifesto — FDE doctrine, toolchain layers, governance, and Grok Build quick-reference.
 -   `CLAUDEBUILD_DOCTRINE.md`: Optional Claude-oriented doctrine for comparison workflows.
--   `/specs`: `product_brief.md`, `data_contract.md`, `acceptance_criteria.md`, `operator_workflow.md`.
+-   `/specs`: `product_brief.md`, `data_contract.md`, `acceptance_criteria.md`, `operator_workflow.md`, `threat_model.md`.
 -   `/prompts`: ChatGPT, Codex, Grok Build, and Claude Code build/repair briefs.
 -   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`).
 -   `/src/core`: Core analytical modules (data ingestion, scoring, transformations).

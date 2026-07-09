@@ -25,14 +25,14 @@
 - `src/core/transforms.py`, `scoring.py` (logic in `ingestion.py` + `exports.py` + `duckdb_store.py`)
 - `single_file_html/` no-build template
 - `/docs/` (architecture, deployment, demo_script)
-- `specs/threat_model.md`
+
 - Four remaining portfolio artifacts (#2–#5) and umbrella sub-repos
 
 ### Partial
 
 | Path | Have | Missing |
 |---|---|---|
-| `/specs` | product, data contract, acceptance, operator workflow | `threat_model.md` |
+| `/specs` | product, data contract, acceptance, operator workflow, threat model | — |
 | `/prompts` | ChatGPT, Codex, Grok, Claude briefs | eval, design system prompts |
 | `/fixtures` | `sample_telemetry.csv` | xlsx, json, logs samples |
 | `/tests` | ingestion, exports, golden, duckdb | NiceGUI smoke tests |
@@ -119,7 +119,8 @@
 ### P3 — Portfolio path
 
 - [x] Build artifact #1 (Mission Console — NiceGUI + DuckDB)
-- [ ] GitHub remote + README screenshots
+- [x] GitHub remote — `charlesdegen/forward-deployed-ai-workbench`
+- [ ] README screenshots
 - [ ] Split into umbrella sub-repos when artifact count ≥ 2
 - [ ] Build artifact #3 (Local Data Fusion Workbench)
 
