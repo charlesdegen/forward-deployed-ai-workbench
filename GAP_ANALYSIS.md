@@ -63,11 +63,17 @@ Audit found the gate passing while several branches could not fail. Fixed:
 Suite grew 36 → 68 tests. Verified by mutation: comms operator flip, comms threshold
 change, fin-crime weight change, and re-introducing the red-team override each now fail.
 
+- [x] **Unpinned dependencies** — all 22 deps now pinned in `requirements.txt` and
+      `pyproject.toml`. The unused `openai` SDK moved to an opt-in `llm` extra (no
+      surface calls a live model) and unused `streamlit-extras` was dropped. Validated
+      by building a clean venv from the pinned file: 69 tests pass and the Streamlit
+      starter serves with `OPENAI_API_KEY` unset and the SDK absent.
+
 ## Remaining optional polish
 
-- [ ] Pin `requirements.txt` (24 deps unpinned) and drop the unused `openai` dependency
-      — undercuts the README's "reproducible from local files" claim
 - [ ] Ratify `specs/acceptance_criteria.md` (36 boxes still unchecked)
+- [ ] Consider `pip install --require-hashes` for supply-chain integrity; pins are
+      version-locked but not hash-verified (see `specs/threat_model.md`)
 - [ ] Fusion `matching.normalize_key`, non-CSV loaders, and `inner/outer/cross` joins
       remain untested; red-team `SEVERITY_ORDER` low/info entries unused
 - [ ] Demo video / Loom (human-owned)

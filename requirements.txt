@@ -1,24 +1,39 @@
-pandas
-numpy
-openpyxl
-pyarrow
-duckdb
-polars
-plotly
-altair
-pydeck
-streamlit
-streamlit-extras
-nicegui
-fastapi
-uvicorn
-pydantic
-pytest
-jsonschema
-ruff
-black
-mypy
-bandit
-pip-audit
-openai
-playwright
+# Pinned so `pip install -r requirements.txt` reproduces the environment the verify
+# gate was last green against. Bump deliberately, then re-run ./scripts/verify.sh.
+#
+# Live LLM calls are not wired into any surface, so the `openai` SDK is deliberately
+# absent from the core install. Install it via the `llm` extra in pyproject.toml if
+# and when live inference is added.
+
+# --- Core data + scoring ---
+pandas==3.0.3
+numpy==2.5.1
+duckdb==1.5.4
+polars==1.42.1
+jsonschema==4.26.0
+
+# --- Ingestion backends (used indirectly, not imported) ---
+openpyxl==3.1.5  # pandas.read_excel for .xlsx/.xls sources
+pyarrow==24.0.0  # parquet read/write
+
+# --- Operator surfaces ---
+streamlit==1.59.0
+nicegui==3.14.0
+plotly==6.8.0
+
+# --- Transitive runtime deps, pinned so the install graph is reproducible.
+# --- altair/pydeck arrive via streamlit; fastapi/uvicorn/pydantic via nicegui.
+altair==6.2.2
+pydeck==0.9.3
+fastapi==0.139.0
+uvicorn==0.50.2
+pydantic==2.13.4
+
+# --- Verify gate toolchain ---
+pytest==9.1.1
+ruff==0.15.20
+black==26.5.1
+mypy==2.2.0
+bandit==1.9.4
+pip-audit==2.10.1
+playwright==1.61.0
