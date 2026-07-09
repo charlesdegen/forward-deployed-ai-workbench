@@ -36,7 +36,7 @@
 | `/prompts` | ChatGPT, Codex, Grok, Claude briefs | eval, design system prompts |
 | `/fixtures` | `sample_telemetry.csv` | xlsx, json, logs samples |
 | `/tests` | ingestion, exports, golden, duckdb | NiceGUI smoke tests |
-| `/artifacts` | exports/, duckdb runtime, operator log | html, mermaid screenshot dirs |
+| `/artifacts` | screenshots/, exports/, duckdb runtime, operator log | html, mermaid dirs |
 
 ---
 
@@ -120,7 +120,7 @@
 
 - [x] Build artifact #1 (Mission Console — NiceGUI + DuckDB)
 - [x] GitHub remote — `charlesdegen/forward-deployed-ai-workbench`
-- [ ] README screenshots
+- [x] README screenshots (`artifacts/screenshots/`)
 - [ ] Split into umbrella sub-repos when artifact count ≥ 2
 - [ ] Build artifact #3 (Local Data Fusion Workbench)
 

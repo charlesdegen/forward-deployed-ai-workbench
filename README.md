@@ -59,6 +59,34 @@ streamlit run src/apps/streamlit_app.py
 ./scripts/verify.sh
 ```
 
+## Screenshots
+
+### Mission Console (NiceGUI + DuckDB)
+
+Portfolio artifact #1 — operator-grade diagnostics with DuckDB-backed alerts, governance metadata, and degraded-mode guidance.
+
+![Mission Console overview](artifacts/screenshots/mission_console_overview.png)
+
+*Fixture ingest, governance panel, DEGRADED state, Plotly telemetry timelines, and SQL-backed critical alerts queue.*
+
+![Mission Console operator log and RCA export](artifacts/screenshots/mission_console_operator_log.png)
+
+*Operator action log tab with append form and RCA packet export for engineering handoff.*
+
+### Streamlit starter
+
+Lighter starter surface for prompt-export triage loops.
+
+![Streamlit starter overview](artifacts/screenshots/streamlit_starter_overview.png)
+
+Regenerate screenshots after UI changes (requires `playwright` in the active venv):
+
+```bash
+pip install playwright
+playwright install chromium
+python scripts/capture_screenshots.py
+```
+
 ## Optional Agent Adapters
 
 ChatGPT and Codex are the default workflow for this repository. Other agent CLIs can be used as optional adapters when you want to compare build loops or run the same doctrine in another tool.
@@ -110,7 +138,7 @@ Full optional operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE
 -   `/src/core`: Core analytical modules (data ingestion, scoring, transformations).
 -   `/src/apps`: `nicegui_app.py` (Mission Console, DuckDB-backed) and `streamlit_app.py` (starter).
 -   `src/core/duckdb_store.py`: Local DuckDB persistence and SQL alert queries.
--   `/artifacts`: Local operator logs and `exports/` RCA packets (runtime-generated).
+-   `/artifacts`: `screenshots/` (README captures), local operator logs, and `exports/` RCA packets.
 -   `/evals`: Artifact, security, and field-readiness scorecard templates.
 -   `/fixtures`: Sample datasets (telemetry logs, CSV extracts) for testing.
 -   `src/schemas/`: JSON Schema contracts for telemetry input, scored output, and RCA packets.
