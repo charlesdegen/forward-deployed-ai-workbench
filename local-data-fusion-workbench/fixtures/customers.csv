@@ -1,0 +1,5 @@
+customer_id,name,email,segment
+C001,Acme Corp,ops@acme.com,enterprise
+C002,Beta LLC,admin@beta.com,smb
+C003,Gamma Inc,contact@gamma.com,enterprise
+C004,Delta Systems,fleet@delta.com,government

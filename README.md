@@ -43,7 +43,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Run the Mission Console (NiceGUI + DuckDB)
+### 4. Run the Local Data Fusion Workbench (Polars + DuckDB)
+```bash
+python local-data-fusion-workbench/fusion/apps/nicegui_app.py
+```
+Open `http://127.0.0.1:8081` — fixture customers/transactions load on startup. See [local-data-fusion-workbench/README.md](local-data-fusion-workbench/README.md).
+
+### 4a. Run the Mission Console (NiceGUI + DuckDB)
 ```bash
 python src/apps/nicegui_app.py
 ```

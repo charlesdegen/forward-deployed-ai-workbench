@@ -10,13 +10,17 @@ if [[ -d .venv ]]; then
 fi
 
 echo "==> pytest"
-python -m pytest -q
+python -m pytest -q tests local-data-fusion-workbench/tests
 
 echo "==> ruff"
 python -m ruff check src tests
 
 echo "==> py_compile"
 python -m py_compile src/apps/streamlit_app.py src/apps/nicegui_app.py src/core/ingestion.py src/core/exports.py src/core/duckdb_store.py
+python -m py_compile local-data-fusion-workbench/fusion/apps/nicegui_app.py
+for module in ingestion profiling matching fusion anomalies lineage duckdb_store exports; do
+  python -m py_compile "local-data-fusion-workbench/fusion/core/${module}.py"
+done
 
 echo "==> fixture present"
 test -f fixtures/sample_telemetry.csv

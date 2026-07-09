@@ -9,6 +9,9 @@ __pycache__/
 .env
 artifacts/operator_action_log.csv
 artifacts/mission_console.duckdb
+local-data-fusion-workbench/artifacts/data_fusion.duckdb
+local-data-fusion-workbench/artifacts/exports/*
+!local-data-fusion-workbench/artifacts/exports/.gitkeep
 artifacts/exports/*
 !artifacts/exports/.gitkeep
 *.egg-info/

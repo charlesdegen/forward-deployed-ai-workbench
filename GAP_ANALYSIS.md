@@ -122,7 +122,7 @@
 - [x] GitHub remote — `charlesdegen/forward-deployed-ai-workbench`
 - [x] README screenshots (`artifacts/screenshots/`)
 - [ ] Split into umbrella sub-repos when artifact count ≥ 2
-- [ ] Build artifact #3 (Local Data Fusion Workbench)
+- [x] Build artifact #2 (Local Data Fusion Workbench — Polars + DuckDB + NiceGUI)
 
 ---
 

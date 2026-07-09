@@ -1,0 +1,1 @@
+[{"event_id":"E01","customer_id":"C001","event_type":"login","severity":"low"},{"event_id":"E02","customer_id":"C004","event_type":"export","severity":"medium"},{"event_id":"E03","customer_id":"C002","event_type":"alert","severity":"high"}]
