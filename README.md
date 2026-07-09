@@ -43,26 +43,24 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Run the Local Data Fusion Workbench (Polars + DuckDB)
-```bash
-python local-data-fusion-workbench/fusion/apps/nicegui_app.py
-```
-Open `http://127.0.0.1:8081` — fixture customers/transactions load on startup. See [local-data-fusion-workbench/README.md](local-data-fusion-workbench/README.md).
+### 4. Run portfolio artifacts
 
-### 4a. Run the Mission Console (NiceGUI + DuckDB)
-```bash
-python src/apps/nicegui_app.py
-```
-Open `http://127.0.0.1:8080` — fixture telemetry loads into local DuckDB on startup.
+| # | Artifact | Command |
+|---|---|---|
+| 1 | Mission Console (NiceGUI + DuckDB) | `python src/apps/nicegui_app.py` → http://127.0.0.1:8080 |
+| 1b | Streamlit starter (prompt export) | `streamlit run src/apps/streamlit_app.py` |
+| 2 | Local Data Fusion Workbench | `python local-data-fusion-workbench/fusion/apps/nicegui_app.py` → :8081 |
+| 3 | Financial Crime Ops Console | `streamlit run financial-crime-ops-console/fin_crime/apps/streamlit_app.py` |
+| 4 | LLM Red-Team Eval Harness | `streamlit run llm-red-team-eval-harness/redteam/apps/streamlit_app.py` |
+| 5 | Single-File Command Brief | open `single-file-command-briefs/index.html` |
 
-### 4b. Run the Streamlit Starter (legacy surface)
-```bash
-streamlit run src/apps/streamlit_app.py
-```
+Each artifact has its own README under the subfolder. Architecture and demo script: [docs/architecture.md](docs/architecture.md), [docs/demo_script.md](docs/demo_script.md).
 
-### 5. Verify the Starter
+### 5. Verify the portfolio
 ```bash
 ./scripts/verify.sh
+# optional security lane:
+VERIFY_SECURITY=1 ./scripts/verify.sh
 ```
 
 ## Screenshots
@@ -81,16 +79,47 @@ Portfolio artifact #1 — operator-grade diagnostics with DuckDB-backed alerts, 
 
 ### Streamlit starter
 
-Lighter starter surface for prompt-export triage loops.
+Lighter starter surface for multi-adapter prompt-export triage loops (ChatGPT, Codex, Grok Build, Claude Code).
 
 ![Streamlit starter overview](artifacts/screenshots/streamlit_starter_overview.png)
 
-Regenerate screenshots after UI changes (requires `playwright` in the active venv):
+### Local Data Fusion (artifact #2)
+
+![Data Fusion overview](artifacts/screenshots/data_fusion_overview.png)
+
+*Polars profile/join, orphan-key anomalies, Mermaid lineage, local DuckDB register.*
+
+### Financial Crime Ops (artifact #3)
+
+![Financial Crime overview](artifacts/screenshots/fin_crime_overview.png)
+
+*Synthetic AML case queue, rule-based risk bands, audit trail, evidence / SAR-draft export.*
+
+### LLM Red-Team Eval (artifact #4)
+
+![Red-team overview](artifacts/screenshots/redteam_overview.png)
+
+*Offline fixture suite across injection, jailbreak, tool-boundary, and hallucination cases.*
+
+### Single-File Command Brief (artifact #5)
+
+![Single-file command brief](artifacts/screenshots/single_file_command_brief.png)
+
+*Air-gapped HTML brief with vendored ECharts/jQuery/DataTables (no CDN).*
+
+Regenerate all portfolio screenshots after UI changes:
 
 ```bash
 pip install playwright
 playwright install chromium
 python scripts/capture_screenshots.py
+```
+
+UI smoke (single-file by default; full app suite with `SMOKE_FULL=1`):
+
+```bash
+python scripts/smoke_ui.py
+SMOKE_FULL=1 python scripts/smoke_ui.py
 ```
 
 ## Optional Agent Adapters
@@ -132,23 +161,21 @@ Full optional operating doctrine: see [GROKBUILD_DOCTRINE.md](GROKBUILD_DOCTRINE
 
 ## Repository Structure
 
--   `AGENTS.md`: Shared agent rules loaded by Codex, Grok Build, and Claude Code — local-first constraints, verification gates, adapter routing.
--   `CLAUDE.md`: Claude Code session rules (mirrors `AGENTS.md`).
--   `GAP_ANALYSIS.md`: Living gap analysis — repo fidelity vs. doctrine and priority roadmap.
--   `scripts/verify.sh`: Verification gate — pytest, ruff, py_compile, fixture check.
--   `GROKBUILD_DOCTRINE.md`: GrokBuild manifesto — FDE doctrine, toolchain layers, governance, and Grok Build quick-reference.
--   `CLAUDEBUILD_DOCTRINE.md`: Optional Claude-oriented doctrine for comparison workflows.
--   `/specs`: `product_brief.md`, `data_contract.md`, `acceptance_criteria.md`, `operator_workflow.md`, `threat_model.md`.
--   `/prompts`: ChatGPT, Codex, Grok Build, and Claude Code build/repair briefs.
--   `/skills`: Directory containing filesystem-based agent skills and Codex-readable operating guidance (e.g. `triage-skill`).
--   `/src/core`: Core analytical modules (data ingestion, scoring, transformations).
--   `/src/apps`: `nicegui_app.py` (Mission Console, DuckDB-backed) and `streamlit_app.py` (starter).
--   `src/core/duckdb_store.py`: Local DuckDB persistence and SQL alert queries.
--   `/artifacts`: `screenshots/` (README captures), local operator logs, and `exports/` RCA packets.
--   `/evals`: Artifact, security, and field-readiness scorecard templates.
--   `/fixtures`: Sample datasets (telemetry logs, CSV extracts) for testing.
--   `src/schemas/`: JSON Schema contracts for telemetry input, scored output, and RCA packets.
--   `/tests`: pytest suites including `golden_outputs/` regression.
+-   `AGENTS.md` / `CLAUDE.md`: Shared agent rules (local-first, verify gate, adapter routing).
+-   `GAP_ANALYSIS.md`: Living backlog and portfolio scoreboard.
+-   `pyproject.toml` + `requirements.txt`: Dependencies and pytest paths.
+-   `scripts/verify.sh`: Portfolio verification (mission + fusion + fin-crime + redteam + docs).
+-   `docs/`: Architecture, deployment, demo script.
+-   `GROKBUILD_DOCTRINE.md` / `CLAUDEBUILD_DOCTRINE.md`: Operating doctrines.
+-   `/specs`, `/prompts`, `/skills`, `/evals`: Contracts, adapter briefs, domain skills, scorecards.
+-   `/src`: Mission Console core + NiceGUI + Streamlit starter.
+-   `local-data-fusion-workbench/`: Portfolio #2.
+-   `financial-crime-ops-console/`: Portfolio #3.
+-   `llm-red-team-eval-harness/`: Portfolio #4.
+-   `single-file-command-briefs/`: Portfolio #5.
+-   `/fixtures`: Telemetry CSV/JSON/XLSX snippets, sample sensor log.
+-   `/artifacts`: Screenshots, exports, local DuckDB runtimes (gitignored).
+-   `/tests`: Mission golden/regression suites (portfolio tests live in each subproject).
 
 ## ChatGPT / Codex Workflow
 

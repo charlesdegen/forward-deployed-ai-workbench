@@ -12,8 +12,15 @@ artifacts/mission_console.duckdb
 local-data-fusion-workbench/artifacts/data_fusion.duckdb
 local-data-fusion-workbench/artifacts/exports/*
 !local-data-fusion-workbench/artifacts/exports/.gitkeep
+financial-crime-ops-console/artifacts/fin_crime.duckdb
+financial-crime-ops-console/artifacts/exports/*
+!financial-crime-ops-console/artifacts/exports/.gitkeep
+llm-red-team-eval-harness/artifacts/exports/*
+!llm-red-team-eval-harness/artifacts/exports/.gitkeep
 artifacts/exports/*
 !artifacts/exports/.gitkeep
+artifacts/.last_verify_ok
+artifacts/.verify_smoke_ok
 *.egg-info/
 dist/
 build/

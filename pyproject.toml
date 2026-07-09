@@ -1,0 +1,57 @@
+[project]
+name = "forward-deployed-ai-workbench"
+version = "0.3.0"
+description = "Local-first Forward-Deployed AI Systems Workbench portfolio"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pandas",
+  "numpy",
+  "openpyxl",
+  "pyarrow",
+  "duckdb",
+  "polars",
+  "plotly",
+  "altair",
+  "pydeck",
+  "streamlit",
+  "streamlit-extras",
+  "nicegui",
+  "fastapi",
+  "uvicorn",
+  "pydantic",
+  "jsonschema",
+  "openai",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "ruff",
+  "black",
+  "mypy",
+  "bandit",
+  "pip-audit",
+  "playwright",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tests",
+  "local-data-fusion-workbench/tests",
+  "financial-crime-ops-console/tests",
+  "llm-red-team-eval-harness/tests",
+]
+pythonpath = ["."]
+markers = [
+  "smoke: Playwright UI smoke checks (may start local servers)",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+# Keep the verify gate focused on real defects; pre-existing long UI strings are ignored.
+select = ["E", "F"]
+ignore = ["E501"]

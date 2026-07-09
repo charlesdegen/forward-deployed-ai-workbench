@@ -1,0 +1,8 @@
+# Synthetic sensor log — multi-format fixture demo (not production telemetry)
+2026-07-01T12:00:00Z INFO boot sequence complete asset=UAV-17
+2026-07-01T12:00:01Z INFO comms_link=96.2 battery=98.1
+2026-07-01T12:00:10Z WARN sensor_drift=0.41 threshold=0.30
+2026-07-01T12:00:30Z ERROR cpu_utilization=98.5 temperature=88.2
+2026-07-01T12:00:31Z ERROR cpu_utilization=97.1 temperature=87.8
+2026-07-01T12:00:35Z INFO degraded_mode=engaged throttle=50
+2026-07-01T12:01:00Z INFO operator_action=verify_cooling actor=field_op_1

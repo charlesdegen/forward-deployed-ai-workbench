@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Executive Command Brief — Mission Autonomy</title>
+  <!-- Air-gap: all assets under vendor/ — no CDN required -->
+  <link rel="stylesheet" href="vendor/jquery.dataTables.min.css" />
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #121820;
+      --border: #243041;
+      --text: #e6edf3;
+      --muted: #9fb0c3;
+      --crit: #ff8b8b;
+      --crit-bg: #3f1d1d;
+      --ok-bg: #14301f;
+      --ok: #7ee2a8;
+      --blue: #6cb6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      body { padding: 2.5rem; }
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (min-width: 768px) {
+      header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 0.35rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.875rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .subtitle { color: var(--muted); margin: 0.35rem 0 0; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+    .gov { font-size: 0.875rem; }
+    .gov div { margin: 0.15rem 0; }
+    .muted { color: var(--muted); }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (min-width: 768px) {
+      .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    .metric-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0;
+    }
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0.35rem 0 0;
+    }
+    .grid-2 {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (min-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+    }
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin: 0 0 0.75rem;
+    }
+    ul, ol {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: #cbd5e1;
+      font-size: 0.875rem;
+    }
+    li { margin: 0.4rem 0; }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .pill {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      background: var(--crit-bg);
+      color: var(--crit);
+    }
+    .pill.ok { background: var(--ok-bg); color: var(--ok); }
+    #chart { height: 280px; width: 100%; }
+    table.dataTable {
+      width: 100% !important;
+      color: var(--text);
+    }
+    table.dataTable thead th {
+      color: var(--muted) !important;
+      border-bottom: 1px solid var(--border) !important;
+    }
+    table.dataTable tbody td {
+      border-top: 1px solid #1c2430 !important;
+    }
+    table.dataTable.stripe tbody tr.odd,
+    table.dataTable.display tbody tr.odd {
+      background-color: #0f141c !important;
+    }
+    table.dataTable.hover tbody tr:hover,
+    table.dataTable.display tbody tr:hover {
+      background-color: #1a222e !important;
+    }
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+      color: var(--muted) !important;
+    }
+    footer {
+      font-size: 0.75rem;
+      color: #64748b;
+      border-top: 1px solid #1e293b;
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+    }
+    .overflow { overflow-x: auto; }
+  </style>
+  <script src="vendor/jquery.min.js"></script>
+  <script src="vendor/jquery.dataTables.min.js"></script>
+  <script src="vendor/echarts.min.js"></script>
+</head>
+<body>
+  <header>
+    <div>
+      <p class="eyebrow">Portfolio artifact #5 · Zero-install · Air-gap vendor assets</p>
+      <h1>Executive Command Brief</h1>
+      <p class="subtitle">Mission Autonomy Field Support — offline snapshot</p>
+    </div>
+    <div class="card gov">
+      <div><span class="muted">Data source:</span> <span id="gov-source">embedded fixture</span></div>
+      <div><span class="muted">Generated:</span> <span id="gov-ts"></span></div>
+      <div><span class="muted">Model usage:</span> none (local rules)</div>
+      <div><span class="muted">Test status:</span> umbrella verify.sh</div>
+      <div><span class="muted">Assets:</span> local vendor/ (no CDN)</div>
+    </div>
+  </header>
+
+  <section class="grid-4">
+    <div class="card">
+      <p class="metric-label">System state</p>
+      <p id="metric-state" class="metric-value">DEGRADED</p>
+    </div>
+    <div class="card">
+      <p class="metric-label">Alerts</p>
+      <p id="metric-alerts" class="metric-value">—</p>
+    </div>
+    <div class="card">
+      <p class="metric-label">Peak CPU</p>
+      <p id="metric-cpu" class="metric-value">—</p>
+    </div>
+    <div class="card">
+      <p class="metric-label">Peak temp °C</p>
+      <p id="metric-temp" class="metric-value">—</p>
+    </div>
+  </section>
+
+  <section class="grid-2">
+    <div class="card">
+      <h2>Telemetry trends</h2>
+      <div id="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Operator assumptions</h2>
+      <ul id="assumptions"></ul>
+      <h2 style="margin-top:1.5rem">Recommended actions</h2>
+      <ol id="actions"></ol>
+    </div>
+  </section>
+
+  <section class="card" style="margin-bottom:2rem">
+    <div class="section-head">
+      <h2 style="margin:0">Alert queue</h2>
+      <span id="state-pill" class="pill">DEGRADED</span>
+    </div>
+    <div class="overflow">
+      <table id="alerts" class="display stripe hover" style="width:100%">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>CPU %</th>
+            <th>Temp °C</th>
+            <th>Risk</th>
+            <th>Flags</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Forward-Deployed AI Systems Workbench · Single-file command brief ·
+    Open <code>index.html</code> offline; JS/CSS load from <code>vendor/</code> only.
+  </footer>
+
+  <script>
+    const BRIEF = {
+      governance: {
+        data_source: "embedded synthetic snapshot (mission autonomy)",
+        model_usage: "none",
+        test_status: "scripts/verify.sh",
+        system_state: "DEGRADED"
+      },
+      assumptions: [
+        "Sensor rate assumed 1 Hz for this executive snapshot.",
+        "Risk flags mirror src/core/ingestion.py thresholds.",
+        "No live telemetry link — offline briefing only.",
+        "Actions require human operator confirmation in the field console."
+      ],
+      actions: [
+        "Throttle compute to degraded mode (50%) until thermal clears.",
+        "Verify cooling path and fan power rails.",
+        "Capture process list for engineering RCA packet.",
+        "Keep comms link checks on 60s cadence."
+      ],
+      series: {
+        labels: ["T-6", "T-5", "T-4", "T-3", "T-2", "T-1", "T0"],
+        cpu: [42, 45, 48, 88, 97, 96, 91],
+        temp: [51, 53, 55, 79, 87, 88, 86]
+      },
+      alerts: [
+        { t: "12:04:01", cpu: 97, temp: 87, risk: 3, flags: "cpu,temp_critical" },
+        { t: "12:04:02", cpu: 96, temp: 88, risk: 3, flags: "cpu,temp_critical" },
+        { t: "12:04:03", cpu: 91, temp: 86, risk: 3, flags: "cpu,temp_critical" },
+        { t: "12:03:50", cpu: 88, temp: 79, risk: 2, flags: "cpu,temp_warning" }
+      ]
+    };
+
+    document.getElementById("gov-ts").textContent = new Date().toISOString();
+    document.getElementById("gov-source").textContent = BRIEF.governance.data_source;
+    document.getElementById("metric-state").textContent = BRIEF.governance.system_state;
+    document.getElementById("metric-alerts").textContent = String(BRIEF.alerts.length);
+    document.getElementById("metric-cpu").textContent = Math.max(...BRIEF.series.cpu) + "%";
+    document.getElementById("metric-temp").textContent = String(Math.max(...BRIEF.series.temp));
+
+    const assumptions = document.getElementById("assumptions");
+    BRIEF.assumptions.forEach((a) => {
+      const li = document.createElement("li");
+      li.textContent = a;
+      assumptions.appendChild(li);
+    });
+    const actions = document.getElementById("actions");
+    BRIEF.actions.forEach((a) => {
+      const li = document.createElement("li");
+      li.textContent = a;
+      actions.appendChild(li);
+    });
+
+    const chart = echarts.init(document.getElementById("chart"));
+    chart.setOption({
+      backgroundColor: "transparent",
+      textStyle: { color: "#9fb0c3" },
+      tooltip: { trigger: "axis" },
+      legend: { data: ["CPU %", "Temp °C"], textStyle: { color: "#9fb0c3" } },
+      grid: { left: 40, right: 16, top: 40, bottom: 30 },
+      xAxis: {
+        type: "category",
+        data: BRIEF.series.labels,
+        axisLine: { lineStyle: { color: "#334" } }
+      },
+      yAxis: {
+        type: "value",
+        axisLine: { lineStyle: { color: "#334" } },
+        splitLine: { lineStyle: { color: "#1c2430" } }
+      },
+      series: [
+        { name: "CPU %", type: "line", data: BRIEF.series.cpu, smooth: true, itemStyle: { color: "#6cb6ff" } },
+        { name: "Temp °C", type: "line", data: BRIEF.series.temp, smooth: true, itemStyle: { color: "#ff8b8b" } }
+      ]
+    });
+    window.addEventListener("resize", () => chart.resize());
+
+    const tbody = document.querySelector("#alerts tbody");
+    BRIEF.alerts.forEach((row) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + row.t + "</td><td>" + row.cpu + "</td><td>" + row.temp +
+        "</td><td>" + row.risk + "</td><td>" + row.flags + "</td>";
+      tbody.appendChild(tr);
+    });
+    $("#alerts").DataTable({
+      order: [[3, "desc"]],
+      pageLength: 5,
+      dom: "t"
+    });
+  </script>
+</body>
+</html>

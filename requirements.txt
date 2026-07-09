@@ -21,3 +21,4 @@ mypy
 bandit
 pip-audit
 openai
+playwright

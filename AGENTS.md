@@ -21,19 +21,21 @@ Convert ambiguous operational requirements into **local-first, high-trust, testa
 |---|---|
 | `specs/` | Product briefs, data contracts, acceptance criteria, threat model |
 | `prompts/` | Reusable architect and repair briefs per agent adapter |
-| `skills/` | Domain skills (`SKILL.md`) for triage, RCA, evals |
-| `src/core/` | Ingestion, scoring, exports (`exports.py`), DuckDB store (`duckdb_store.py`) |
-| `src/apps/nicegui_app.py` | Mission Console — portfolio NiceGUI + DuckDB surface |
+| `skills/` | Domain skills (`triage`, `fin-crime`, `redteam`) |
+| `src/core/` | Mission ingestion, scoring, exports, DuckDB store |
+| `src/apps/` | Mission NiceGUI console + Streamlit starter |
+| `local-data-fusion-workbench/` | Portfolio #2 — Polars + DuckDB fusion |
+| `financial-crime-ops-console/` | Portfolio #3 — AML case workflow |
+| `llm-red-team-eval-harness/` | Portfolio #4 — offline red-team suite |
+| `single-file-command-briefs/` | Portfolio #5 — zero-install HTML brief |
 | `src/schemas/` | JSON Schema contracts for input, output, RCA |
+| `docs/` | Architecture, deployment, demo script |
 | `evals/` | Artifact, security, field-readiness scorecards |
-| `src/apps/` | Streamlit, NiceGUI, and other operator UIs |
 | `fixtures/` | Sample datasets for tests and demos |
-| `tests/` | pytest suites and golden outputs |
+| `tests/` | Mission pytest suites and golden outputs |
 | `artifacts/` | Runtime exports and operator logs (generated locally) |
-| `CLAUDE.md` | Claude Code session rules (mirrors this file) |
-| `scripts/verify.sh` | pytest + ruff + py_compile gate |
-| `GROKBUILD_DOCTRINE.md` | Grok Build operating doctrine |
-| `CLAUDEBUILD_DOCTRINE.md` | Claude Build operating doctrine |
+| `scripts/verify.sh` | Full portfolio pytest + ruff + py_compile gate |
+| `GAP_ANALYSIS.md` | Living backlog / portfolio scoreboard |
 
 ## Verification Before Handoff
 

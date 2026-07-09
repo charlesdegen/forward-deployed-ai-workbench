@@ -173,7 +173,7 @@ with col4:
     """, unsafe_allow_html=True)
 
 # Main Data View and Visualizations
-tab_data, tab_log, tab_ai = st.tabs(["📊 Telemetry & Alerts", "🧾 Operator Log", "🤖 ChatGPT / Codex Assistant"])
+tab_data, tab_log, tab_ai = st.tabs(["📊 Telemetry & Alerts", "🧾 Operator Log", "🤖 Adapter Briefs"])
 
 with tab_data:
     col_chart, col_table = st.columns([2, 1])
@@ -267,30 +267,35 @@ with tab_log:
         )
 
 with tab_ai:
-    st.subheader("ChatGPT / Codex Triage Loop")
-    st.write("This starter exports high-context prompts. Use ChatGPT to draft diagnostic reasoning from the alert context, then use Codex to implement repairs, tests, and export improvements in this repository.")
+    st.subheader("Multi-adapter triage briefs")
+    st.write(
+        "Prompt export mode only — no live model calls. Use ChatGPT/Grok/Claude for diagnostic framing; "
+        "use Codex/Grok Build/Claude Code for repo-native repair. Full templates also live under `prompts/`."
+    )
 
     if not api_key:
-        st.warning("No `OPENAI_API_KEY` detected. Prompt export still works offline; live API calls are intentionally not wired in this starter.")
-
-        st.subheader("Offline Fallback Triage Checklist")
-        st.markdown("""
-        **Alert Detected**: CPU & Temperature Spikes (>85% CPU, >80°C warning, >85°C critical)
-
-        **Recommended Checklist:**
-        1.  [ ] Verify cooling fan power lines.
-        2.  [ ] Terminate orphan compute threads (e.g. `kill -9` on high CPU loads).
-        3.  [ ] Switch system operation to Degraded Mode (50% throttle).
-        4.  [ ] Check for thermal throttling sensor logs.
-        """)
+        st.warning(
+            "No `OPENAI_API_KEY` detected. Prompt export still works offline; live API calls are intentionally not wired."
+        )
     else:
-        st.success("API key detected. This starter still runs in prompt export mode; use the generated brief as the payload for ChatGPT or Codex.")
+        st.success(
+            "API key detected in environment. This starter still runs in prompt export mode only."
+        )
 
-        critical_telemetry = scored_df[scored_df['risk_score'] > 0].to_dict(orient='records')
+    st.subheader("Offline fallback triage checklist")
+    st.markdown(
+        """
+        **Alert pattern**: CPU & temperature spikes (>85% CPU, >80°C warning, >85°C critical)
 
-        st.subheader("ChatGPT Diagnostic Prompt")
-        st.code(
-            f"""You are supporting a field operator triaging autonomous asset telemetry.
+        1. [ ] Verify cooling fan power lines.
+        2. [ ] Terminate orphan compute threads on high CPU loads.
+        3. [ ] Switch to degraded mode (50% throttle).
+        4. [ ] Check thermal throttling sensor logs.
+        """
+    )
+
+    critical_telemetry = scored_df[scored_df["risk_score"] > 0].to_dict(orient="records")
+    diagnostic_body = f"""You are supporting a field operator triaging autonomous asset telemetry.
 
 Use the triage priorities from skills/triage-skill/SKILL.md:
 1. Safety and power
@@ -308,15 +313,49 @@ Return:
 - operator-safe checklist
 - assumptions and uncertainty
 - engineering feedback packet
-""",
-            language="text",
-        )
-
-        st.subheader("Codex Repair Brief")
-        st.code(
-            """Inspect the telemetry scoring and Streamlit app.
+"""
+    repair_body = """Inspect the telemetry scoring and Streamlit/NiceGUI apps.
 Add or repair tests for the observed failure mode.
 Keep scoring logic in src/core and UI changes in src/apps.
-Run pytest and summarize changed files, verification output, and remaining risks.""",
-            language="text",
-        )
+Run ./scripts/verify.sh and summarize changed files, verification output, and remaining risks."""
+
+    st.subheader("ChatGPT diagnostic prompt")
+    st.code(diagnostic_body, language="text")
+
+    st.subheader("Codex repair brief")
+    st.code(repair_body, language="text")
+
+    st.subheader("Grok Build brief")
+    st.code(
+        f"""# Grok Build — mission triage repair
+
+Constraints: local-first, logic in src/core/, UI in src/apps/, offline fallback, no secrets in repo.
+
+Context:
+{diagnostic_body}
+
+Implementation brief:
+{repair_body}
+
+Attach: @src/core/ingestion.py @skills/triage-skill/SKILL.md @tests/
+Then run /check-work scoring and export paths.
+""",
+        language="text",
+    )
+
+    st.subheader("Claude Code brief")
+    st.code(
+        f"""# Claude Code — mission triage repair
+
+Follow CLAUDE.md / AGENTS.md. Preserve tests; add focused coverage.
+
+Operator context:
+{diagnostic_body}
+
+Repo task:
+{repair_body}
+
+Read specs/data_contract.md before changing thresholds. Verify with ./scripts/verify.sh.
+""",
+        language="text",
+    )

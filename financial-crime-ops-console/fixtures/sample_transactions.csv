@@ -1,0 +1,13 @@
+transaction_id,timestamp,account_id,counterparty_id,amount_usd,currency,channel,country_origin,country_dest,is_cross_border,customer_segment,prior_sar_count
+TX-1001,2026-07-01T09:15:00Z,ACC-100,CP-900,250.00,USD,ach,US,US,false,retail,0
+TX-1002,2026-07-01T10:02:00Z,ACC-101,CP-901,9500.00,USD,wire,US,US,false,retail,0
+TX-1003,2026-07-01T11:30:00Z,ACC-102,CP-902,125000.00,USD,wire,US,XX,true,commercial,1
+TX-1004,2026-07-01T12:00:00Z,ACC-103,CP-903,8750.00,USD,cash_deposit,US,US,false,retail,0
+TX-1005,2026-07-01T13:45:00Z,ACC-104,CP-904,52000.00,USD,wire,US,CA,true,commercial,0
+TX-1006,2026-07-01T14:10:00Z,ACC-105,CP-905,1500.00,USD,card,US,US,false,retail,0
+TX-1007,2026-07-01T15:20:00Z,ACC-106,CP-906,210000.00,USD,crypto_onramp,US,YY,true,commercial,2
+TX-1008,2026-07-01T16:05:00Z,ACC-107,CP-907,9900.00,USD,wire,US,MX,true,retail,1
+TX-1009,2026-07-01T17:00:00Z,ACC-108,CP-908,450.00,USD,ach,US,US,false,retail,0
+TX-1010,2026-07-01T18:30:00Z,ACC-109,CP-909,78000.00,USD,wire,US,ZZ,true,commercial,0
+TX-1011,2026-07-02T08:00:00Z,ACC-110,CP-910,12000.00,USD,wire,US,GB,true,retail,0
+TX-1012,2026-07-02T09:30:00Z,ACC-111,CP-911,320.00,USD,card,US,US,false,retail,0
