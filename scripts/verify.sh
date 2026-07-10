@@ -102,9 +102,9 @@ if [[ "${VERIFY_SECURITY:-0}" == "1" ]]; then
   pip-audit || true
 fi
 
-echo "==> playwright smoke (single-file brief by default; SMOKE_FULL=1 for apps)"
+echo "==> playwright smoke (full suite by default; SMOKE_FULL=0 for brief-only, VERIFY_SMOKE=0 to skip)"
 if [[ "${VERIFY_SMOKE:-1}" == "1" ]]; then
-  SMOKE_REQUIRED="${SMOKE_REQUIRED:-0}" python scripts/smoke_ui.py
+  SMOKE_FULL="${SMOKE_FULL:-1}" SMOKE_REQUIRED="${SMOKE_REQUIRED:-0}" python scripts/smoke_ui.py
 else
   echo "SKIP: VERIFY_SMOKE=0"
 fi

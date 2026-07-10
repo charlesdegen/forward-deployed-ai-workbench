@@ -74,16 +74,27 @@ change, fin-crime weight change, and re-introducing the red-team override each n
       The starter smoke strips `OPENAI_API_KEY` so the offline-fallback constraint is
       enforced by the gate, not just claimed.
 
-## Remaining optional polish
+## Closed (polish sweep, 2026-07-09)
 
-- [ ] Ratify `specs/acceptance_criteria.md` (36 boxes still unchecked)
-- [ ] Consider `pip install --require-hashes` for supply-chain integrity; pins are
-      version-locked but not hash-verified (see `specs/threat_model.md`)
-- [ ] Fusion `matching.normalize_key`, non-CSV loaders, and `inner/outer/cross` joins
-      remain untested; red-team `SEVERITY_ORDER` low/info entries unused
+- [x] **Acceptance criteria ratified** — all 36 boxes mapped to a pinned test,
+      verify gate, or verified code path; ratification note in the spec header.
+- [x] **Hash-verified installs** — `requirements-lock.txt` locks the full transitive
+      closure (2,497 SHA-256 hashes, `uv pip compile --generate-hashes`). Validated:
+      clean venv via `pip install --require-hashes`, then 81 tests pass from it.
+- [x] **Fusion/red-team test gaps** — `normalize_key`, `add_normalized_key`, JSON/
+      Parquet/Excel/file-like loaders, and `inner/outer/cross` joins now tested.
+      Testing found two real `fuse_datasets` defects: `outer` relied on a deprecated
+      polars alias (now maps to `full`) and `cross` crashed by passing join keys.
+      Red-team fixture gained `low` (TB-003) and `info` (HL-003) cases so every
+      `SEVERITY_ORDER` tier is fixture-reachable; weights pinned (info = 0 weight
+      but still blocks SHIP; low < high).
+- [x] **Full smoke by default** — `verify.sh` now runs the complete surface smoke
+      unless `SMOKE_FULL=0` (brief-only) or `VERIFY_SMOKE=0` (skip).
+
+## Remaining (human-owned / conditional)
+
 - [ ] Demo video / Loom (human-owned)
 - [ ] Split monorepo into five remotes (only if packaging requires)
-- [ ] Expand smoke full suite in default CI if machine budget allows (`SMOKE_FULL=1`)
 
 ---
 

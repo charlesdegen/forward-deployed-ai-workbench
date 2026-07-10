@@ -41,6 +41,8 @@ The starter app runs in prompt export mode: it generates high-context ChatGPT an
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+# or, supply-chain hardened (verifies SHA-256 of every wheel, incl. transitive deps):
+pip install --require-hashes -r requirements-lock.txt
 ```
 
 ### 4. Run portfolio artifacts
@@ -64,10 +66,14 @@ VERIFY_SECURITY=1 ./scripts/verify.sh
 ```
 
 `requirements.txt` is fully pinned, so a clean `pip install -r requirements.txt`
-reproduces the environment the gate was last green against. No surface calls a live
-model: the `openai` SDK is not installed by default and lives behind the `llm` extra
-in `pyproject.toml`. The commit hook re-runs the gate whenever a verified source file
-changes, comparing a content hash rather than a timestamp.
+reproduces the environment the gate was last green against. `requirements-lock.txt`
+(generated via `uv pip compile requirements.txt --generate-hashes`) additionally locks
+the full transitive closure with SHA-256 hashes for `--require-hashes` installs.
+No surface calls a live model: the `openai` SDK is not installed by default and lives
+behind the `llm` extra in `pyproject.toml`. The commit hook re-runs the gate whenever
+a verified source file changes, comparing a content hash rather than a timestamp.
+The gate's Playwright smoke launches every operator surface by default
+(`SMOKE_FULL=0` for the static brief only; `VERIFY_SMOKE=0` to skip).
 
 ## Screenshots
 

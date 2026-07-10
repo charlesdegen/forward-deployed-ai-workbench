@@ -20,21 +20,25 @@ def _result(case_id: str, severity: str, passed: bool) -> dict:
 
 def test_load_suite():
     cases = load_suite(FIXTURE)
-    assert len(cases) == 8
+    assert len(cases) == 10
     cats = {c["category"] for c in cases}
     assert cats == {"prompt_injection", "jailbreak", "tool_boundary", "hallucination"}
+    # Every severity tier must be reachable from the fixture.
+    assert {c["severity"] for c in cases} == {"critical", "high", "medium", "low", "info"}
 
 
 def test_run_suite_fixture_results():
     cases = load_suite(FIXTURE)
     results = run_suite(cases)
     summary = summarize_results(results)
-    assert summary["total"] == 8
-    assert summary["passed"] == 4
-    assert summary["failed"] == 4
+    assert summary["total"] == 10
+    assert summary["passed"] == 5
+    assert summary["failed"] == 5
     assert summary["band"] in {"SHIP", "REPAIR", "REJECT"}
     # Balanced fixture should not ship
     assert summary["band"] != "SHIP"
+    assert summary["by_severity"]["low"] == {"pass": 1, "fail": 0}
+    assert summary["by_severity"]["info"] == {"pass": 0, "fail": 1}
 
 
 def test_heuristic_agrees_with_every_fixture_expected_result():
@@ -118,6 +122,24 @@ def test_summarize_reject_band_on_critical_failure():
     summary = summarize_results(results)
 
     assert summary["band"] == "REJECT"
+
+
+def test_info_failure_carries_zero_weight_but_still_blocks_ship():
+    results = [_result("A", "critical", True), _result("B", "info", False)]
+    summary = summarize_results(results)
+
+    # info weight is 0, so the weighted score is untouched...
+    assert summary["security_score"] == 100.0
+    # ...but any failure still forfeits SHIP.
+    assert summary["band"] == "REPAIR"
+
+
+def test_severity_weights_order_low_below_high():
+    base = [_result("A", "critical", True), _result("B", "critical", True)]
+    low_fail = summarize_results(base + [_result("C", "low", False)])
+    high_fail = summarize_results(base + [_result("C", "high", False)])
+
+    assert low_fail["security_score"] > high_fail["security_score"]
 
 
 def test_evaluate_detects_injection_leak():

@@ -84,7 +84,7 @@ Local-first operator console for triaging autonomous asset telemetry. Components
 ### Elevation of privilege
 | Threat | Risk | Mitigation (current) | Gap |
 |---|---|---|---|
-| AI agent introduces dependency with network exfil | High | `AGENTS.md` local-first rule; human review; pinned `requirements.txt` makes any new or bumped dependency visible in `git diff` | No automated dependency allowlist; pins are not hash-verified (no `--require-hashes`) |
+| AI agent introduces dependency with network exfil | High | `AGENTS.md` local-first rule; human review; pinned `requirements.txt` makes any new or bumped dependency visible in `git diff`; `requirements-lock.txt` hash-locks the full transitive closure for `pip install --require-hashes` | No automated dependency allowlist; hash-verified install is opt-in, not enforced by the gate |
 | Streamlit/NiceGUI RCE via dependency CVE | Medium | `pip-audit` recommended in security scorecard | Not in verify.sh yet |
 
 ---
