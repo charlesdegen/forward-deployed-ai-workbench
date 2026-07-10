@@ -69,6 +69,11 @@ change, fin-crime weight change, and re-introducing the red-team override each n
       by building a clean venv from the pinned file: 69 tests pass and the Streamlit
       starter serves with `OPENAI_API_KEY` unset and the SDK absent.
 
+- [x] **Full smoke covered 3 of 5 surfaces** — `SMOKE_FULL=1` now launches all five
+      (starter, mission console, fusion, fin-crime, red-team) plus the static brief.
+      The starter smoke strips `OPENAI_API_KEY` so the offline-fallback constraint is
+      enforced by the gate, not just claimed.
+
 ## Remaining optional polish
 
 - [ ] Ratify `specs/acceptance_criteria.md` (36 boxes still unchecked)
