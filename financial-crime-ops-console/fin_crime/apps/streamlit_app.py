@@ -22,7 +22,7 @@ from fin_crime.core.duckdb_store import (  # noqa: E402
 )
 from fin_crime.core.exports import build_evidence_packet, write_evidence_exports  # noqa: E402
 from fin_crime.core.ingestion import load_transactions_csv, parse_transactions_csv  # noqa: E402
-from fin_crime.core.scoring import case_queue, score_transactions  # noqa: E402
+from fin_crime.core.scoring import CASE_QUEUE_MIN_SCORE, case_queue, score_transactions  # noqa: E402
 
 FIXTURE = ARTIFACT_ROOT / "fixtures" / "sample_transactions.csv"
 DB_PATH = ARTIFACT_ROOT / "artifacts" / "fin_crime.duckdb"
@@ -52,10 +52,11 @@ with st.sidebar:
     st.header("Governance")
     st.markdown(
         """
-        - **Data:** synthetic fixtures only  
-        - **Scoring:** rule-based (no ML)  
-        - **Exports:** training drafts, not filings  
+        - **Data:** synthetic fixtures only
+        - **Scoring:** rule-based (no ML)
+        - **Exports:** training drafts, not filings
         - **Skill:** `skills/fin-crime-skill/`
+        - **Tests:** `pytest: fin-crime suite + golden`
         """
     )
     last_refresh = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -73,7 +74,7 @@ def _load(source_mode: str, uploaded) -> tuple[pd.DataFrame, str]:
 
 raw_df, data_source = _load(source_mode, uploaded)
 scored = score_transactions(raw_df)
-queue = case_queue(scored, min_score=25)
+queue = case_queue(scored)
 
 con = connect(DB_PATH)
 replace_cases(con, scored)
@@ -89,7 +90,7 @@ tab_queue, tab_case, tab_audit, tab_export = st.tabs(
 )
 
 with tab_queue:
-    st.subheader("Open cases (risk ≥ 25)")
+    st.subheader(f"Open cases (risk ≥ {CASE_QUEUE_MIN_SCORE})")
     st.dataframe(
         queue[
             [

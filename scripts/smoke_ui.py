@@ -87,34 +87,94 @@ def smoke_mission_console() -> None:
         _terminate(process)
 
 
-def smoke_fin_crime() -> None:
+def _smoke_streamlit(
+    script: Path,
+    port: int,
+    needles: tuple[str, ...],
+    *,
+    cwd: Path | None = None,
+    env: dict[str, str] | None = None,
+) -> None:
     from playwright.sync_api import sync_playwright
 
     process = subprocess.Popen(
         [
             "streamlit",
             "run",
-            str(REPO_ROOT / "financial-crime-ops-console/fin_crime/apps/streamlit_app.py"),
+            str(script),
             "--server.headless",
             "true",
             "--server.port",
-            "8512",
+            str(port),
             "--browser.gatherUsageStats",
             "false",
         ],
-        cwd=str(REPO_ROOT / "financial-crime-ops-console"),
+        cwd=str(cwd or REPO_ROOT),
+        env=env,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
     try:
-        _wait_for_server("http://127.0.0.1:8512")
+        _wait_for_server(f"http://127.0.0.1:{port}")
         time.sleep(2)
         with sync_playwright() as p:
             browser = p.chromium.launch()
             page = browser.new_page()
-            page.goto("http://127.0.0.1:8512", wait_until="networkidle", timeout=60_000)
+            page.goto(f"http://127.0.0.1:{port}", wait_until="networkidle", timeout=60_000)
             text = page.content()
-            assert "Financial Crime" in text or "Case" in text
+            assert any(needle in text for needle in needles), f"none of {needles} rendered"
+            browser.close()
+    finally:
+        _terminate(process)
+
+
+def smoke_streamlit_starter() -> None:
+    # Offline fallback constraint: the starter must serve without API credentials.
+    env = {k: v for k, v in os.environ.items() if k != "OPENAI_API_KEY"}
+    _smoke_streamlit(
+        REPO_ROOT / "src/apps/streamlit_app.py",
+        8511,
+        ("Mission Autonomy", "Telemetry"),
+        env=env,
+    )
+
+
+def smoke_fin_crime() -> None:
+    _smoke_streamlit(
+        REPO_ROOT / "financial-crime-ops-console/fin_crime/apps/streamlit_app.py",
+        8512,
+        ("Financial Crime", "Case"),
+        cwd=REPO_ROOT / "financial-crime-ops-console",
+    )
+
+
+def smoke_redteam() -> None:
+    _smoke_streamlit(
+        REPO_ROOT / "llm-red-team-eval-harness/redteam/apps/streamlit_app.py",
+        8513,
+        ("Red-Team", "Eval Harness"),
+        cwd=REPO_ROOT / "llm-red-team-eval-harness",
+    )
+
+
+def smoke_fusion() -> None:
+    from playwright.sync_api import sync_playwright
+
+    process = subprocess.Popen(
+        [sys.executable, str(REPO_ROOT / "local-data-fusion-workbench/fusion/apps/nicegui_app.py")],
+        cwd=REPO_ROOT / "local-data-fusion-workbench",
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    try:
+        _wait_for_server("http://127.0.0.1:8081")
+        time.sleep(1)
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page()
+            page.goto("http://127.0.0.1:8081", wait_until="networkidle", timeout=60_000)
+            body = page.content()
+            assert "Fusion" in body or "Lineage" in body or "Profile" in body
             browser.close()
     finally:
         _terminate(process)
@@ -133,7 +193,10 @@ def main() -> int:
     checks = [
         ("single-file-command-brief", smoke_single_file_brief),
         ("mission-console", smoke_mission_console),
+        ("streamlit-starter", smoke_streamlit_starter),
+        ("fusion", smoke_fusion),
         ("fin-crime", smoke_fin_crime),
+        ("redteam", smoke_redteam),
     ]
     # Fast path for CI lite: only static brief unless SMOKE_FULL=1
     if os.environ.get("SMOKE_FULL", "0") != "1":

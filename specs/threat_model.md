@@ -84,7 +84,7 @@ Local-first operator console for triaging autonomous asset telemetry. Components
 ### Elevation of privilege
 | Threat | Risk | Mitigation (current) | Gap |
 |---|---|---|---|
-| AI agent introduces dependency with network exfil | High | `AGENTS.md` local-first rule; human review | No automated dependency allowlist |
+| AI agent introduces dependency with network exfil | High | `AGENTS.md` local-first rule; human review; pinned `requirements.txt` makes any new or bumped dependency visible in `git diff` | No automated dependency allowlist; pins are not hash-verified (no `--require-hashes`) |
 | Streamlit/NiceGUI RCE via dependency CVE | Medium | `pip-audit` recommended in security scorecard | Not in verify.sh yet |
 
 ---
@@ -132,7 +132,10 @@ flowchart LR
 | No hardcoded secrets | Implemented | Repo |
 | `.env` gitignored | Implemented | Repo |
 | Runtime artifacts gitignored | Implemented | Repo |
+| Pinned dependency versions | Implemented | `requirements.txt` / `pyproject.toml` |
+| No LLM SDK in default install | Implemented | `openai` behind `llm` extra |
 | Input schema validation | Implemented | `ingestion.py` |
+| Input range validation (schema-bound) | Implemented | `ingestion.py` + `input_schema.json` |
 | JSON Schema contracts | Implemented | `src/schemas/` |
 | Golden regression tests | Implemented | `tests/golden_outputs/` |
 | Security scorecard template | Implemented | `evals/security_scorecard.md` |

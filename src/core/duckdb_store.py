@@ -9,6 +9,8 @@ from pathlib import Path
 import duckdb
 import pandas as pd
 
+from src.core.ingestion import summarize_alert_state
+
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_DB_PATH = REPO_ROOT / "artifacts" / "mission_console.duckdb"
 
@@ -93,8 +95,9 @@ def store_scored_telemetry(
     """Replace active telemetry with a newly scored frame. Returns session_id."""
     init_schema(conn)
     prepared = _prepare_scored_frame(scored_df)
-    alert_count = int((prepared["risk_score"] > 0).sum())
-    system_state = "DEGRADED" if alert_count > 0 else "NOMINAL"
+    state = summarize_alert_state(prepared)
+    alert_count = state["alert_count"]
+    system_state = state["system_state"]
     session_id = uuid.uuid4().hex[:12]
     ingested_at = datetime.now(timezone.utc).replace(tzinfo=None)
 

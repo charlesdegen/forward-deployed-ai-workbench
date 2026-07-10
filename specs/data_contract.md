@@ -24,18 +24,34 @@ Define the input schema, validation rules, and scored output fields for local te
 ### Validation rules
 
 - All six columns must be present; missing columns raise `ValueError` with column names listed.
+- Numeric columns must satisfy the bounds published in `src/schemas/input_schema.json`
+  (`battery_level` 0–100, `cpu_utilization` 0–100, `comms_link` 0–100, `sensor_drift` ≥ 0).
+  Violations raise `ValueError` listing each offending column. Enforced at the CSV
+  boundary by `parse_telemetry_csv`, which reads its bounds directly from the schema.
 - `timestamp` is parsed with `parse_dates=['timestamp']`.
 - Extra columns are ignored by the starter contract (future: warn in governance panel).
 
 ### Reference implementation
 
 - `validate_telemetry_schema(df)` — column presence check
-- `parse_telemetry_csv(source)` — path or file-like object
+- `validate_telemetry_ranges(df)` — schema-bound numeric range and type check
+- `parse_telemetry_csv(source)` — path or file-like object; runs both validators
 - `load_telemetry_csv(path)` — filesystem path wrapper
 
 ### Fixture
 
-- `fixtures/sample_telemetry.csv` — 50 records with injected anomalies at indices 10 (sensor drift) and 30 (CPU + temperature).
+`fixtures/sample_telemetry.csv` — 50 records. Every anomaly flag and both ends of the
+risk range are exercised, so a threshold regression on any signal fails the golden test:
+
+| Indices | Injected condition | Flags | `risk_score` |
+|---|---|---|---|
+| 10–12 | Sensor drift spike (0.45) | `sensor_anomaly` | 20 |
+| 30–34 | CPU spike (98.5) + temperature surge (88.2) | `cpu_anomaly`, `temp_warning`, `temp_critical` | 60 |
+| 40–42 | Comms link degradation (62.5–71.0) | `comms_anomaly` | 20 |
+| 45 | Full cascade (all five signals) | all | 100 |
+| 47 | Temperature 82.3 — warning band only | `temp_warning` | 20 |
+
+Totals: 13 alert rows, `max(risk_score) == 100`.
 
 ## Scoring thresholds
 

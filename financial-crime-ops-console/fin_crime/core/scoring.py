@@ -18,6 +18,10 @@ STRUCTURING_FLOOR = 8_000.0
 
 HIGH_RISK_COUNTRIES = frozenset({"XX", "YY", "ZZ"})  # synthetic jurisdiction codes
 
+# Minimum risk a case must carry to reach the operator queue. Surfaces import this
+# rather than restating the number, so the queue cutoff has one definition.
+CASE_QUEUE_MIN_SCORE = 25
+
 
 def score_transactions(df: pd.DataFrame) -> pd.DataFrame:
     """Add risk_score (0–100), risk_band, and flag columns."""
@@ -89,7 +93,7 @@ def score_transactions(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def case_queue(scored: pd.DataFrame, min_score: int = 25) -> pd.DataFrame:
+def case_queue(scored: pd.DataFrame, min_score: int = CASE_QUEUE_MIN_SCORE) -> pd.DataFrame:
     """Return open cases ordered by risk, excluding low-noise rows."""
     queue = scored[scored["risk_score"] >= min_score].copy()
     return queue.sort_values(["risk_score", "timestamp"], ascending=[False, True]).reset_index(drop=True)

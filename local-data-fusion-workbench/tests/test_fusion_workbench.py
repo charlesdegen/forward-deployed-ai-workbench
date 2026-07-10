@@ -1,9 +1,7 @@
-import json
 import os
 import sys
 from pathlib import Path
 
-import polars as pl
 import pytest
 
 ARTIFACT_ROOT = Path(__file__).resolve().parents[1]
@@ -137,3 +135,16 @@ def test_export_fused_and_lineage(customers_and_transactions, tmp_path):
     lineage_path = export_lineage_markdown(lineage, basename="test_lineage")
     assert Path(lineage_path).exists()
     assert "flowchart LR" in Path(lineage_path).read_text(encoding="utf-8")
+
+def test_governance_panel_state_records_source_and_refresh():
+    """Governance visibility: the fusion surface must name its source and refresh time."""
+    from fusion.apps.nicegui_app import STATE, _load_fixture_bundle
+
+    assert STATE["data_source"] == "none"
+    assert STATE["last_refresh"] == "never"
+
+    _load_fixture_bundle()
+
+    assert "customers.csv" in STATE["data_source"]
+    assert STATE["last_refresh"].endswith("Z")
+    assert STATE["last_refresh"] != "never"

@@ -63,6 +63,12 @@ Each artifact has its own README under the subfolder. Architecture and demo scri
 VERIFY_SECURITY=1 ./scripts/verify.sh
 ```
 
+`requirements.txt` is fully pinned, so a clean `pip install -r requirements.txt`
+reproduces the environment the gate was last green against. No surface calls a live
+model: the `openai` SDK is not installed by default and lives behind the `llm` extra
+in `pyproject.toml`. The commit hook re-runs the gate whenever a verified source file
+changes, comparing a content hash rather than a timestamp.
+
 ## Screenshots
 
 ### Mission Console (NiceGUI + DuckDB)

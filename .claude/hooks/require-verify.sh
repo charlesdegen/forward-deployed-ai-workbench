@@ -48,12 +48,12 @@ fi
 STAMP="artifacts/.last_verify_ok"
 NEED_RUN=1
 if [[ -f "$STAMP" ]]; then
-  # Accept stamp younger than 30 minutes
-  if command -v python3 >/dev/null 2>&1; then
-    AGE="$(python3 -c "import time,pathlib; p=pathlib.Path('$STAMP'); print(int(time.time()-p.stat().st_mtime))")"
-    if [[ "$AGE" -lt 1800 ]]; then
-      NEED_RUN=0
-    fi
+  # The stamp records the source hash that last passed verify. Any edit to a
+  # verified source file changes the hash, so a stale gate can never be reused.
+  RECORDED="$(cat "$STAMP" 2>/dev/null || true)"
+  CURRENT="$(bash scripts/source_hash.sh 2>/dev/null || true)"
+  if [[ -n "$CURRENT" && "$RECORDED" == "$CURRENT" ]]; then
+    NEED_RUN=0
   fi
 fi
 
@@ -64,7 +64,7 @@ if [[ "$NEED_RUN" == "1" ]]; then
     exit 2
   fi
 else
-  echo "require-verify: recent verify stamp present ($STAMP)" >&2
+  echo "require-verify: source hash matches last passing verify ($STAMP)" >&2
 fi
 
 exit 0

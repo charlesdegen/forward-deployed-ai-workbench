@@ -5,34 +5,38 @@ description = "Local-first Forward-Deployed AI Systems Workbench portfolio"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-  "pandas",
-  "numpy",
-  "openpyxl",
-  "pyarrow",
-  "duckdb",
-  "polars",
-  "plotly",
-  "altair",
-  "pydeck",
-  "streamlit",
-  "streamlit-extras",
-  "nicegui",
-  "fastapi",
-  "uvicorn",
-  "pydantic",
-  "jsonschema",
-  "openai",
+  "pandas==3.0.3",
+  "numpy==2.5.1",
+  "openpyxl==3.1.5",
+  "pyarrow==24.0.0",
+  "duckdb==1.5.4",
+  "polars==1.42.1",
+  "plotly==6.8.0",
+  "altair==6.2.2",
+  "pydeck==0.9.3",
+  "streamlit==1.59.0",
+  "nicegui==3.14.0",
+  "fastapi==0.139.0",
+  "uvicorn==0.50.2",
+  "pydantic==2.13.4",
+  "jsonschema==4.26.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "pytest",
-  "ruff",
-  "black",
-  "mypy",
-  "bandit",
-  "pip-audit",
-  "playwright",
+  "pytest==9.1.1",
+  "ruff==0.15.20",
+  "black==26.5.1",
+  "mypy==2.2.0",
+  "bandit==1.9.4",
+  "pip-audit==2.10.1",
+  "playwright==1.61.0",
+]
+# Not installed by default. No surface calls a live model; the starter exports
+# prompts for manual use. Adding this extra widens the blast radius described in
+# specs/threat_model.md ("Telemetry in AI prompt export") and requires a re-review.
+llm = [
+  "openai==2.44.0",
 ]
 
 [tool.pytest.ini_options]

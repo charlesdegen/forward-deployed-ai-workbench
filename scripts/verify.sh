@@ -16,8 +16,12 @@ python -m pytest -q \
   financial-crime-ops-console/tests \
   llm-red-team-eval-harness/tests
 
-echo "==> ruff"
-python -m ruff check src tests
+echo "==> ruff (mission + all portfolio artifacts)"
+python -m ruff check \
+  src tests scripts \
+  local-data-fusion-workbench \
+  financial-crime-ops-console \
+  llm-red-team-eval-harness
 
 echo "==> py_compile (mission)"
 python -m py_compile src/apps/streamlit_app.py src/apps/nicegui_app.py src/core/ingestion.py src/core/exports.py src/core/duckdb_store.py
@@ -65,6 +69,7 @@ test -f src/schemas/rca_packet_schema.json
 
 echo "==> golden output present"
 test -f tests/golden_outputs/fixture_scoring_summary.json
+test -f financial-crime-ops-console/tests/golden_outputs/fixture_case_summary.json
 
 echo "==> docs present"
 test -f docs/architecture.md
@@ -88,6 +93,7 @@ echo "==> claude/grok verify hooks present"
 test -x .claude/hooks/require-verify.sh || chmod +x .claude/hooks/require-verify.sh
 test -f .claude/settings.json
 test -f .grok/hooks/require-verify.json
+test -f scripts/source_hash.sh
 
 if [[ "${VERIFY_SECURITY:-0}" == "1" ]]; then
   echo "==> bandit (optional)"
@@ -103,8 +109,8 @@ else
   echo "SKIP: VERIFY_SMOKE=0"
 fi
 
-# Stamp for PreToolUse commit/push hooks
+# Stamp for PreToolUse commit/push hooks: the hash of the sources this run verified.
 mkdir -p artifacts
-date -u +"%Y-%m-%dT%H:%M:%SZ" > artifacts/.last_verify_ok
+bash scripts/source_hash.sh > artifacts/.last_verify_ok
 
 echo "OK: all verification checks passed"
